@@ -1,0 +1,297 @@
+/* CSS cho trang địa chỉ */
+.address-hero {
+    background-color: #f2f4f8;
+    position: relative;
+    overflow: hidden;
+    box-shadow: 0px 1px 0px #e8e8e8;
+}
+
+.address-hero::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><defs><pattern id="grain" width="100" height="100" patternUnits="userSpaceOnUse"><circle cx="25" cy="25" r="1" fill="rgba(255,255,255,0.1)"/><circle cx="75" cy="75" r="1" fill="rgba(255,255,255,0.1)"/><circle cx="50" cy="10" r="0.5" fill="rgba(255,255,255,0.05)"/><circle cx="10" cy="60" r="0.5" fill="rgba(255,255,255,0.05)"/><circle cx="90" cy="40" r="0.5" fill="rgba(255,255,255,0.05)"/></pattern></defs><rect width="100" height="100" fill="url(%23grain)"/></svg>');
+    opacity: 0.3;
+}
+
+.address-card {
+    transition: all 0.3s ease;
+}
+
+
+
+.address-card .card {
+    border-radius: 15px;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.08);
+    transition: all 0.3s ease;
+    border: 1px solid rgba(0, 123, 255, 0.1);
+}
+
+
+
+.address-card .card.border-primary {
+    border-color: #007bff !important;
+    background: linear-gradient(135deg, rgba(0, 123, 255, 0.05) 0%, rgba(0, 86, 179, 0.05) 100%);
+}
+
+.empty-state .card {
+    border-radius: 20px;
+    background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+}
+
+/* Modal styles */
+.modal-content {
+    border-radius: 20px;
+    border: none;
+    box-shadow: 0 20px 40px rgba(0,0,0,0.15);
+    overflow: hidden;
+}
+
+.modal-header {
+    background: black;
+    color: white;
+    border-radius: 20px 20px 0 0;
+    border: none;
+    padding: 20px 25px;
+}
+
+.modal-header .btn-close {
+    filter: invert(1);
+    opacity: 0.8;
+}
+
+.modal-header .btn-close:hover {
+    opacity: 1;
+}
+
+.modal-body {
+    padding: 25px;
+    background: #f8f9fa;
+}
+
+.modal-footer {
+    padding: 20px 25px;
+    background: white;
+    border-top: 1px solid #e9ecef;
+}
+
+.form-label {
+    font-weight: 600;
+    color: #495057;
+    margin-bottom: 8px;
+}
+
+.form-control, .form-select {
+    border-radius: 12px;
+    border: 2px solid #e9ecef;
+    padding: 12px 15px;
+    transition: all 0.3s ease;
+    background: white;
+}
+
+.form-control:focus, .form-select:focus {
+    border-color: #007bff;
+    box-shadow: 0 0 0 0.2rem rgba(0, 123, 255, 0.25);
+    background: white;
+}
+
+.form-select:disabled {
+    background-color: #f8f9fa;
+    opacity: 0.6;
+}
+
+/* Button styles */
+.btn {
+    border-radius: 12px;
+    font-weight: 600;
+    padding: 12px 24px;
+    transition: all 0.3s ease;
+    border: none;
+    cursor: pointer !important;
+}
+
+.btn-primary {
+    background: linear-gradient(135deg, #007bff 0%, #0056b3 100%);
+    border: none;
+}
+
+.btn-primary:hover {
+    background: linear-gradient(135deg, #0056b3 0%, #004085 100%);
+    transform: translateY(-2px);
+    box-shadow: 0 5px 15px rgba(0, 123, 255, 0.4);
+}
+
+.btn-outline-primary {
+    border: 2px solid #007bff;
+    color: #007bff;
+    background: white;
+}
+
+.btn-outline-primary:hover {
+    background: #007bff;
+    border-color: #007bff;
+    color: white;
+    transform: translateY(-2px);
+}
+
+.btn-light {
+    background: white;
+    color: #007bff;
+    border: 2px solid rgba(0, 123, 255, 0.2);
+}
+
+.btn-light:hover {
+    background: #f8f9fa;
+    border-color: #007bff;
+    color: #007bff;
+    transform: translateY(-2px);
+    box-shadow: 0 5px 15px rgba(0, 123, 255, 0.2);
+}
+
+/* Force cursor pointer cho tất cả button */
+button, .btn, input[type="button"], input[type="submit"] {
+    cursor: pointer !important;
+}
+
+/* Đặc biệt cho button trong hero section */
+#addAddressBtn {
+    cursor: pointer !important;
+    pointer-events: auto !important;
+    user-select: none;
+    position: relative;
+    z-index: 10;
+}
+
+#addAddressBtn:hover {
+    cursor: pointer !important;
+}
+
+#addAddressBtn:active {
+    cursor: pointer !important;
+}
+
+.btn-danger {
+    background: linear-gradient(135deg, #ff6b6b 0%, #ee5a52 100%);
+    border: none;
+}
+
+.btn-danger:hover {
+    background: linear-gradient(135deg, #ff5252 0%, #e53935 100%);
+    transform: translateY(-2px);
+    box-shadow: 0 5px 15px rgba(255, 107, 107, 0.4);
+}
+
+/* Alert styles */
+.alert {
+    border-radius: 12px;
+    border: none;
+    padding: 15px 20px;
+}
+
+.alert-success {
+    background: linear-gradient(135deg, rgba(40, 167, 69, 0.1) 0%, rgba(25, 135, 84, 0.1) 100%);
+    color: #155724;
+    border-left: 4px solid #28a745;
+}
+
+.alert-danger {
+    background: linear-gradient(135deg, rgba(220, 53, 69, 0.1) 0%, rgba(200, 35, 51, 0.1) 100%);
+    color: #721c24;
+    border-left: 4px solid #dc3545;
+}
+
+/* Dropdown styles */
+.dropdown-menu {
+    border-radius: 10px;
+    border: none;
+    box-shadow: 0 5px 15px rgba(0,0,0,0.15);
+    padding: 8px 0;
+}
+
+.dropdown-item {
+    padding: 10px 20px;
+    transition: all 0.2s ease;
+}
+
+.dropdown-item:hover {
+    background: linear-gradient(135deg, #007bff 0%, #0056b3 100%);
+    color: white;
+}
+
+/* Badge styles */
+.badge {
+    font-size: 0.75rem;
+    padding: 6px 12px;
+    border-radius: 20px;
+}
+
+/* Loading animation */
+.btn.loading {
+    position: relative;
+    pointer-events: none;
+}
+
+.btn.loading::after {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 20px;
+    height: 20px;
+    margin: -10px 0 0 -10px;
+    border: 2px solid transparent;
+    border-top: 2px solid #ffffff;
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+    .address-hero h1 {
+        font-size: 2rem;
+    }
+    
+    .address-hero .lead {
+        font-size: 1rem;
+    }
+    
+    .modal-dialog {
+        margin: 10px;
+    }
+    
+    .btn-lg {
+        padding: 12px 24px;
+        font-size: 1rem;
+    }
+}
+
+/* Animation cho các card */
+@keyframes fadeInUp {
+    from {
+        opacity: 0;
+        transform: translateY(30px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.address-card {
+    animation: fadeInUp 0.6s ease-out;
+}
+
+.address-card:nth-child(1) { animation-delay: 0.1s; }
+.address-card:nth-child(2) { animation-delay: 0.2s; }
+.address-card:nth-child(3) { animation-delay: 0.3s; }
+.address-card:nth-child(4) { animation-delay: 0.4s; }
+.address-card:nth-child(5) { animation-delay: 0.5s; }
+.address-card:nth-child(6) { animation-delay: 0.6s; }

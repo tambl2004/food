@@ -1,0 +1,374 @@
+/* Products Page Styles - Clean & Stable Design */
+.products-hero {
+    background: #f8f9fa;
+    color: #1f2937;
+    padding: 2rem 0;
+}
+
+.hero-stats .stat-item {
+    text-align: center;
+    padding: 1.5rem;
+    background: white;
+    border-radius: 8px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.stat-number {
+    font-size: 2rem;
+    font-weight: 700;
+    color: #2563eb;
+}
+
+.stat-label {
+    font-size: 0.9rem;
+    color: #6b7280;
+}
+
+.filters-section {
+    background: white;
+    border-bottom: 1px solid #e5e7eb;
+    padding: 1.5rem 0;
+}
+
+/* Product Cards - Stable Design */
+.product-card {
+    background: white;
+    border-radius: 8px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    overflow: hidden;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+}
+
+.product-card:hover {
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.15);
+}
+
+.product-card .card {
+    border: none;
+    border-radius: 8px;
+    overflow: hidden;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+}
+
+.card-img-wrapper {
+    position: relative;
+    overflow: hidden;
+    height: 200px;
+    background: #f8f9fa;
+}
+
+.card-img-top {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: center;
+}
+
+.card-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.7);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    opacity: 0;
+}
+
+.product-card:hover .card-overlay {
+    opacity: 1;
+}
+
+.card-body {
+    padding: 16px;
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+}
+
+.price {
+    font-size: 1.125rem;
+    font-weight: 700;
+    color: #2563eb;
+}
+
+/* Empty State */
+.empty-state {
+    text-align: center;
+    padding: 3rem 1rem;
+}
+
+.empty-state i {
+    color: #d1d5db;
+    margin-bottom: 1rem;
+}
+
+.empty-state h3 {
+    color: #6b7280;
+    margin-bottom: 0.5rem;
+}
+
+.empty-state p {
+    color: #9ca3af;
+    margin-bottom: 1.5rem;
+}
+
+/* Product Detail Page */
+.product-image-gallery .main-image-container {
+    position: relative;
+    background: #f8f9fa;
+    border-radius: 8px;
+    overflow: hidden;
+}
+
+.main-product-image {
+    width: 100%;
+    height: 500px;
+    object-fit: cover;
+    object-position: center;
+}
+
+.image-zoom-overlay {
+    position: absolute;
+    top: 1rem;
+    right: 1rem;
+    background: rgba(0, 0, 0, 0.5);
+    color: white;
+    padding: 0.5rem;
+    border-radius: 0.5rem;
+    opacity: 0;
+}
+
+.main-image-container:hover .image-zoom-overlay {
+    opacity: 1;
+}
+
+/* Thumbnail Images */
+.thumbnail-img {
+    cursor: pointer;
+    border: 2px solid transparent;
+    object-fit: cover;
+    background: #f8f9fa;
+    height: 80px;
+}
+
+.thumbnail-img:hover,
+.thumbnail-img.active {
+    border-color: #2563eb;
+}
+
+/* New full redesign blocks for Product Detail */
+.product-detail-new .breadcrumb { color: #6b7280; }
+.gallery-vertical .thumbs { width: 88px; }
+.gallery-vertical .thumb-item { 
+    border: 2px solid transparent; 
+    border-radius: 8px; 
+    background: transparent; 
+    padding: 0; 
+    margin-bottom: 8px; 
+}
+.gallery-vertical .thumb-item img { 
+    width: 84px; height: 84px; object-fit: cover; border-radius: 6px; background: #f8f9fa;
+}
+.gallery-vertical .thumb-item.active { border-color: #2563eb; }
+
+.buy-card .benefit-list li { 
+    display: flex; align-items: center; gap: 8px; color: #495057; margin-bottom: 6px; 
+}
+.price-line { border-bottom: 1px dashed #e5e7eb; padding-bottom: 12px; }
+
+.product-tabs .nav-link { font-weight: 600; color: #495057; }
+.product-tabs .nav-link.active { color: #2563eb; }
+
+/* Wishlist heart button - KHÔNG dùng màu tím */
+.btn-wishlist {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    z-index: 10;
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    background: rgba(255,255,255,0.9);
+    border: 1px solid #e5e7eb;
+    color: #6b7280;
+    transition: all .2s ease;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    cursor: pointer;
+    pointer-events: auto;
+    user-select: none;
+}
+
+.btn-wishlist:hover { 
+    transform: translateY(-1px); 
+    box-shadow: 0 6px 16px rgba(0,0,0,.15); 
+    background: rgba(255,255,255,1);
+    color: #374151;
+}
+
+.btn-wishlist.active { 
+    background: #ef4444; 
+    color: #fff; 
+    border-color: #ef4444; 
+}
+
+.btn-wishlist.active:hover {
+    background: #dc2626;
+    border-color: #dc2626;
+}
+
+.btn-wishlist:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+}
+
+.btn-wishlist:disabled:hover {
+    transform: none;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+}
+
+/* Promotion badge */
+.promo-badge {
+    position: absolute;
+    left: 100px; top: 7px;
+    background: linear-gradient(135deg,#f97316,#f59e0b);
+    color:#fff; font-weight:700; font-size:.85rem;
+    padding:4px 8px; border-radius:8px;
+    z-index:3;
+}
+
+/* Rating styles (di chuyển từ inline) */
+.rating-star {
+    color: #dee2e6 !important;
+    cursor: pointer !important;
+    font-size: 1.5rem !important;
+    margin-right: 0.25rem !important;
+    transition: all 0.2s ease !important;
+    user-select: none !important;
+    display: inline-block !important;
+}
+
+.rating-star:hover {
+    transform: scale(1.05) !important;
+    color: #ffc107 !important;
+}
+
+.rating-star.text-warning { color: #ffc107 !important; }
+.rating-star.fas { color: #ffc107 !important; }
+.rating-star.text-muted { color: #dee2e6 !important; }
+
+.rating-input {
+    padding: 0.5rem 0;
+    min-height: 60px;
+    align-items: center;
+}
+
+.rating-input .rating-star {
+    border: 1px solid transparent;
+    padding: 5px;
+    border-radius: 4px;
+}
+
+.rating-input .rating-star:hover {
+    background-color: rgba(255, 193, 7, 0.1);
+    border-color: #ffc107;
+}
+
+/* Đảm bảo FontAwesome icon sao hiển thị đúng */
+.fa-star { font-family: "Font Awesome 6 Free" !important; font-weight: 900 !important; }
+.far.fa-star { font-weight: 400 !important; }
+
+/* Toast Notification Styles */
+.alert-success {
+    background: linear-gradient(135deg, #22c55e, #16a34a) !important;
+    color: white !important;
+    border: none !important;
+}
+
+.alert-danger {
+    background: linear-gradient(135deg, #ef4444, #dc2626) !important;
+    color: white !important;
+    border: none !important;
+}
+
+.alert-info {
+    background: linear-gradient(135deg, #3b82f6, #2563eb) !important;
+    color: white !important;
+    border: none !important;
+}
+
+/* Đảm bảo toast không bị che bởi các element khác */
+.position-fixed {
+    z-index: 99999 !important;
+}
+
+/* Animation cho toast */
+@keyframes slideInRight {
+    from {
+        transform: translateX(100%);
+        opacity: 0;
+    }
+    to {
+        transform: translateX(0);
+        opacity: 1;
+    }
+}
+
+@keyframes slideOutRight {
+    from {
+        transform: translateX(0);
+        opacity: 1;
+    }
+    to {
+        transform: translateX(100%);
+        opacity: 0;
+    }
+}
+
+/* Product Info sticky card & actions */
+.product-info { background: transparent; }
+.add-to-cart-section .quantity-input { max-width: 96px; margin: 0 8px; }
+.quantity-btn { width: 42px; height: 42px; display: inline-flex; align-items: center; justify-content: center; }
+
+/* Tabs */
+.product-tabs .nav-link { font-weight: 600; color: #495057; }
+.product-tabs .nav-link.active { color: #2563eb; border-bottom: 2px solid #2563eb; }
+
+/* Trust badges */
+.feature-item i { width: 20px; text-align: center; }
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .product-card {
+        margin-bottom: 1rem;
+    }
+    
+    .card-img-wrapper {
+        height: 180px;
+    }
+    
+    .card-body {
+        padding: 12px;
+}
+
+.price {
+        font-size: 1rem;
+    }
+    
+    .main-product-image {
+        height: 300px;
+    }
+    
+    .thumbnail-img {
+        height: 60px;
+    }
+}
