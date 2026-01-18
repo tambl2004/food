@@ -8,6 +8,7 @@ use App\Http\Controllers\ProductController;
 use App\Http\Controllers\ContactController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\ReviewController;
+use App\Http\Controllers\UserPreferenceController;
 
 
 // Controllers cho Admin
@@ -46,6 +47,11 @@ Route::middleware('auth')->group(function () {
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::put('/profile/password', [ProfileController::class, 'updatePassword'])->name('profile.password.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
+    
+    // Sở thích ăn uống
+    Route::get('/preferences', [UserPreferenceController::class, 'show'])->name('preferences.show');
+    Route::put('/preferences', [UserPreferenceController::class, 'update'])->name('preferences.update');
+    Route::post('/preferences/reset', [UserPreferenceController::class, 'reset'])->name('preferences.reset');
 });
 
 // Trang hiển thị TẤT CẢ sản phẩm

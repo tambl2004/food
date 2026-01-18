@@ -70,4 +70,10 @@ class User extends Authenticatable implements MustVerifyEmail // <-- SỬA DÒNG
                     ->withPivot('created_at')
                     ->orderBy('favorite_dishes.created_at', 'desc');
     }
+
+    // Relationship với UserPreference
+    public function userPreference()
+    {
+        return $this->hasOne(UserPreference::class);
+    }
 }
