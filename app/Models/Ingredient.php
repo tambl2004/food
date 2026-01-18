@@ -11,13 +11,16 @@ class Ingredient extends Model
 
     protected $fillable = [
         'name',
+        'slug',
         'type',
         'unit',
         'description',
-        'slug'
+        'status'
     ];
 
-    // No stock field - ingredients are just reference data
+    protected $casts = [
+        'status' => 'string',
+    ];
 
     /**
      * Relationship với Dishes qua dish_ingredients
@@ -27,5 +30,29 @@ class Ingredient extends Model
         return $this->belongsToMany(Dish::class, 'dish_ingredients')
                     ->withPivot('quantity', 'unit', 'is_required')
                     ->withTimestamps();
+    }
+
+    /**
+     * Relationship với IngredientNutrition (one-to-one)
+     */
+    public function nutrition()
+    {
+        return $this->hasOne(IngredientNutrition::class);
+    }
+
+    /**
+     * Scope để lấy nguyên liệu active
+     */
+    public function scopeActive($query)
+    {
+        return $query->where('status', 'active');
+    }
+
+    /**
+     * Scope để lấy nguyên liệu inactive
+     */
+    public function scopeInactive($query)
+    {
+        return $query->where('status', 'inactive');
     }
 }

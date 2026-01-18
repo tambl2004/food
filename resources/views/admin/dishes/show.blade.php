@@ -127,13 +127,30 @@
 
                     @if($dish->video_url)
                         <div class="md:col-span-2">
-                            <label class="text-sm font-medium text-gray-500">Video hướng dẫn</label>
-                            <p class="text-gray-900 mt-1">
-                                <a href="{{ $dish->video_url }}" target="_blank" class="text-blue-600 hover:underline">
-                                    {{ $dish->video_url }}
-                                    <i class="fas fa-external-link-alt ml-1"></i>
-                                </a>
-                            </p>
+                            <label class="text-sm font-medium text-gray-500 mb-2">Video hướng dẫn</label>
+                            @if($dish->youtube_embed_url)
+                                <div class="mt-2 rounded-lg overflow-hidden shadow-sm" style="position: relative; padding-bottom: 56.25%; height: 0;">
+                                    <iframe 
+                                        src="{{ $dish->youtube_embed_url }}" 
+                                        frameborder="0" 
+                                        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
+                                        allowfullscreen
+                                        style="position: absolute; top: 0; left: 0; width: 100%; height: 100%;">
+                                    </iframe>
+                                </div>
+                                <p class="text-sm text-gray-500 mt-2">
+                                    <a href="{{ $dish->video_url }}" target="_blank" class="text-blue-600 hover:underline">
+                                        Xem trên YouTube <i class="fas fa-external-link-alt ml-1"></i>
+                                    </a>
+                                </p>
+                            @else
+                                <p class="text-gray-900 mt-1">
+                                    <a href="{{ $dish->video_url }}" target="_blank" class="text-blue-600 hover:underline">
+                                        {{ $dish->video_url }}
+                                        <i class="fas fa-external-link-alt ml-1"></i>
+                                    </a>
+                                </p>
+                            @endif
                         </div>
                     @endif
                 </div>

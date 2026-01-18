@@ -136,5 +136,41 @@ class Dish extends Model
     {
         return $query->where('status', 'inactive');
     }
+
+    /**
+     * Lấy YouTube video ID từ URL
+     */
+    public function getYoutubeVideoIdAttribute()
+    {
+        if (!$this->video_url) {
+            return null;
+        }
+
+        $url = $this->video_url;
+        
+        // Hỗ trợ các format URL YouTube:
+        // https://www.youtube.com/watch?v=VIDEO_ID
+        // https://youtu.be/VIDEO_ID
+        // https://www.youtube.com/embed/VIDEO_ID
+        // https://m.youtube.com/watch?v=VIDEO_ID
+        
+        if (preg_match('/(?:youtube\.com\/watch\?v=|youtu\.be\/|youtube\.com\/embed\/|m\.youtube\.com\/watch\?v=)([a-zA-Z0-9_-]{11})/', $url, $matches)) {
+            return $matches[1];
+        }
+        
+        return null;
+    }
+
+    /**
+     * Lấy YouTube embed URL
+     */
+    public function getYoutubeEmbedUrlAttribute()
+    {
+        $videoId = $this->youtube_video_id;
+        if ($videoId) {
+            return "https://www.youtube.com/embed/{$videoId}";
+        }
+        return null;
+    }
 }
 

@@ -112,7 +112,8 @@ Route::middleware(['auth', 'admin'])->prefix('admin')->name('admin.')->group(fun
     Route::resource('faq', AdminFaqController::class)->except(['show']);
     
     // Ingredients management (food domain)
-    Route::resource('ingredients', AdminIngredientController::class)->except(['show']);
+    Route::resource('ingredients', AdminIngredientController::class);
+    Route::put('/ingredients/{ingredient}/status', [AdminIngredientController::class, 'updateStatus'])->name('ingredients.updateStatus');
     
     // Favorite dishes management
     Route::resource('favorite-dishes', AdminFavoriteDishController::class)->only(['index', 'show', 'destroy']);
