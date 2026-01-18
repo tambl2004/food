@@ -53,4 +53,18 @@ class User extends Authenticatable implements MustVerifyEmail // <-- SỬA DÒNG
     {
         return $this->hasMany(Review::class);
     }
+
+    // Relationship với FavoriteDish
+    public function favoriteDishes()
+    {
+        return $this->hasMany(FavoriteDish::class);
+    }
+
+    // Relationship với Product qua FavoriteDish
+    public function favoriteProducts()
+    {
+        return $this->belongsToMany(Product::class, 'favorite_dishes', 'user_id', 'product_id')
+                    ->withPivot('created_at')
+                    ->orderBy('favorite_dishes.created_at', 'desc');
+    }
 }

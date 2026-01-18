@@ -27,6 +27,7 @@ class DatabaseSeeder extends Seeder
             NewsSeeder::class,
             ReviewSeeder::class,
             FaqSeeder::class,
+            FavoriteDishSeeder::class,
         ]);
     }
 }

@@ -21,6 +21,7 @@ use App\Http\Controllers\Admin\NewsController as AdminNewsController;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\NewsController;
 use App\Http\Controllers\Admin\IngredientController as AdminIngredientController;
+use App\Http\Controllers\Admin\FavoriteDishController as AdminFavoriteDishController;
 
 /*
 |--------------------------------------------------------------------------
@@ -109,6 +110,9 @@ Route::middleware(['auth', 'admin'])->prefix('admin')->name('admin.')->group(fun
     
     // Ingredients management (food domain)
     Route::resource('ingredients', AdminIngredientController::class)->except(['show']);
+    
+    // Favorite dishes management
+    Route::resource('favorite-dishes', AdminFavoriteDishController::class)->only(['index', 'show', 'destroy']);
 });
 
 // Nạp nhóm route xác thực (register/login/verify...) để có route verification.verify

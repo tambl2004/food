@@ -50,6 +50,19 @@ class Product extends Model
         return $distribution;
     }
 
+    // Relationship với FavoriteDish
+    public function favoriteDishes()
+    {
+        return $this->hasMany(FavoriteDish::class);
+    }
+
+    // Relationship với User qua FavoriteDish
+    public function favoritedByUsers()
+    {
+        return $this->belongsToMany(User::class, 'favorite_dishes', 'product_id', 'user_id')
+                    ->withPivot('created_at');
+    }
+
     // Note: Products no longer have a price field (removed in migration 2026_01_03_000400_update_products_fields)
     // Products are now recipes, not purchasable items
 }
