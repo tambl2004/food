@@ -28,10 +28,12 @@
                             <span>{{ Auth::user()->name }}</span>
                         </a>
                         <ul class="dropdown-menu dropdown-menu-end shadow-lg border-0" aria-labelledby="userNav">
+                            <li><a class="dropdown-item" href="{{ route('profile.edit') }}"><i class="fas fa-user me-2"></i>Hồ sơ cá nhân</a></li>
                             @if(Auth::user()->role === 'admin')
-                                <li><a class="dropdown-item text-warning" href="{{ route('admin.dashboard') }}"><i class="fas fa-cogs me-2"></i>Trang Admin</a></li>
                                 <li><hr class="dropdown-divider"></li>
+                                <li><a class="dropdown-item text-warning" href="{{ route('admin.dashboard') }}"><i class="fas fa-cogs me-2"></i>Trang Admin</a></li>
                             @endif
+                            <li><hr class="dropdown-divider"></li>
                             <li>
                                 <a class="dropdown-item text-danger" href="#" onclick="event.preventDefault(); document.getElementById('logout-form').submit();">
                                     <i class="fas fa-sign-out-alt me-2"></i>Đăng xuất

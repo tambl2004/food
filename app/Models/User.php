@@ -24,6 +24,7 @@ class User extends Authenticatable implements MustVerifyEmail // <-- SỬA DÒNG
         'role', // Thêm 'role' vào đây nếu bạn chưa có
         'google_id', // Thêm google_id để hỗ trợ OAuth
         'status', // Trạng thái: active / blocked
+        'avatar', // Avatar người dùng
     ];
 
     /**
