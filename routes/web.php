@@ -12,6 +12,7 @@ use App\Http\Controllers\UserPreferenceController;
 use App\Http\Controllers\UserIngredientController;
 use App\Http\Controllers\DishController;
 use App\Http\Controllers\RecommendationController;
+use App\Http\Controllers\ShoppingListController;
 
 
 // Controllers cho Admin
@@ -51,6 +52,12 @@ Route::middleware('auth')->group(function () {
     Route::put('/profile/password', [ProfileController::class, 'updatePassword'])->name('profile.password.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
     
+    // Onboarding - Thu thập sở thích ban đầu
+    Route::prefix('onboarding')->name('onboarding.')->group(function () {
+        Route::get('/preferences', [App\Http\Controllers\OnboardingController::class, 'show'])->name('preferences');
+        Route::post('/preferences', [App\Http\Controllers\OnboardingController::class, 'store'])->name('preferences.store');
+    });
+    
     // Sở thích ăn uống
     Route::get('/preferences', [UserPreferenceController::class, 'show'])->name('preferences.show');
     Route::put('/preferences', [UserPreferenceController::class, 'update'])->name('preferences.update');
@@ -69,6 +76,11 @@ Route::middleware('auth')->group(function () {
     Route::get('/api/recommendations', [RecommendationController::class, 'getRecommendationsApi'])->name('api.recommendations');
     Route::post('/recommendations/dishes/{dish}/view', [RecommendationController::class, 'logView'])->name('recommendations.log-view');
     Route::post('/recommendations/dishes/{dish}/cook', [RecommendationController::class, 'logCook'])->name('recommendations.log-cook');
+    
+    // Nguyên liệu cần mua (Shopping List)
+    Route::get('/shopping-list', [ShoppingListController::class, 'index'])->name('shopping-list.index');
+    Route::get('/api/recommendations/missing-ingredients', [ShoppingListController::class, 'getMissingIngredients'])->name('api.missing-ingredients');
+    Route::post('/api/shopping-list/mark-purchased', [ShoppingListController::class, 'markAsPurchased'])->name('api.shopping-list.mark-purchased');
 });
 
 // Trang hiển thị TẤT CẢ sản phẩm

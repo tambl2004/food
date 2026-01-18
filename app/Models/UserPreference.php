@@ -12,9 +12,12 @@ class UserPreference extends Model
     protected $fillable = [
         'user_id',
         'favorite_categories',
+        'origins',
         'diet_type',
+        'diet_types',
         'spicy_level',
         'disliked_ingredients',
+        'allergies',
         'health_goal',
     ];
 
@@ -22,7 +25,10 @@ class UserPreference extends Model
     {
         return [
             'favorite_categories' => 'array',
+            'origins' => 'array',
+            'diet_types' => 'array',
             'disliked_ingredients' => 'array',
+            'allergies' => 'array',
             'spicy_level' => 'integer',
         ];
     }

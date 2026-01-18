@@ -45,7 +45,12 @@ class RegisteredUserController extends Controller
 
         Auth::login($user);
 
-        // Sau đăng ký: về trang home
+        // Sau đăng ký: kiểm tra nếu chưa có preferences thì điều hướng đến onboarding
+        if (!$user->userPreference) {
+            return redirect()->route('onboarding.preferences');
+        }
+
+        // Nếu đã có preferences: về trang home
         return redirect()->route('home');
     }
 }

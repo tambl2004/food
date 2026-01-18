@@ -6,13 +6,23 @@
 <div class="container py-5">
     <!-- Khu A: Title Section -->
     <div class="mb-5">
-        <h1 class="h2 fw-bold mb-2">
-            <i class="fas fa-robot me-2 text-primary"></i>
-            Món ăn gợi ý cho bạn hôm nay
-        </h1>
-        <p class="text-muted">
-            Được AI đề xuất dựa trên sở thích và nguyên liệu của bạn
-        </p>
+        <div class="d-flex justify-content-between align-items-start mb-3">
+            <div>
+                <h1 class="h2 fw-bold mb-2">
+                    <i class="fas fa-robot me-2 text-primary"></i>
+                    Món ăn gợi ý cho bạn hôm nay
+                </h1>
+                <p class="text-muted">
+                    Được AI đề xuất dựa trên sở thích và nguyên liệu của bạn
+                </p>
+            </div>
+            <div>
+                <a href="{{ route('shopping-list.index') }}" class="btn btn-outline-primary">
+                    <i class="fas fa-shopping-cart me-2"></i>
+                    Nguyên liệu cần mua
+                </a>
+            </div>
+        </div>
     </div>
 
     <!-- Khu B: Quick Filter Bar -->

@@ -29,11 +29,18 @@ class AuthenticatedSessionController extends Controller
 
         $request->session()->regenerate();
         
-        if ($request->user()->role === UserRole::ADMIN) {
+        $user = $request->user();
+        
+        if ($user->role === UserRole::ADMIN) {
             return redirect()->intended(route('admin.dashboard'));
         }
 
-        // Khách hàng: đưa về trang home
+        // Khách hàng: kiểm tra nếu chưa có preferences thì điều hướng đến onboarding
+        if (!$user->userPreference) {
+            return redirect()->intended(route('onboarding.preferences'));
+        }
+
+        // Nếu đã có preferences: đưa về trang home
         return redirect()->intended(route('home'));
     }
 

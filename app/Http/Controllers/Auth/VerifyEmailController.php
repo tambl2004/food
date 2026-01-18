@@ -36,6 +36,12 @@ class VerifyEmailController extends Controller
         if ($user->hasVerifiedEmail()) {
             // đăng nhập luôn để trải nghiệm mượt
             Auth::login($user);
+            
+            // Kiểm tra nếu chưa có preferences thì điều hướng đến onboarding
+            if (!$user->userPreference) {
+                return redirect()->intended(route('onboarding.preferences'));
+            }
+            
             return redirect()->intended(route('home').'?verified=1');
         }
 
@@ -46,6 +52,11 @@ class VerifyEmailController extends Controller
 
         // Tự đăng nhập sau khi xác minh thành công
         Auth::login($user);
+
+        // Kiểm tra nếu chưa có preferences thì điều hướng đến onboarding
+        if (!$user->userPreference) {
+            return redirect()->intended(route('onboarding.preferences'));
+        }
 
         return redirect()->intended(route('home').'?verified=1');
     }

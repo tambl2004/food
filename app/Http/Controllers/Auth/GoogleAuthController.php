@@ -82,6 +82,11 @@ class GoogleAuthController extends Controller
             return redirect()->route('admin.dashboard')->with('success', 'Đăng nhập thành công!');
         }
         
+        // Khách hàng: kiểm tra nếu chưa có preferences thì điều hướng đến onboarding
+        if (!$user->userPreference) {
+            return redirect()->route('onboarding.preferences');
+        }
+        
         return redirect()->route('home')->with('success', 'Đăng nhập thành công!');
     }
 }
