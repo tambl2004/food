@@ -4,16 +4,50 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Models\User;
+use App\Models\FavoriteDish;
+use App\Models\Review;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Validation\Rule;
 
 class UserController extends Controller
 {
-    public function index()
+    public function __construct()
     {
-        $users = User::latest()->paginate(15);
-        return view('admin.users.index', compact('users'));
+        $this->middleware(['auth', 'admin']);
+    }
+
+    public function index(Request $request)
+    {
+        $query = User::latest('created_at');
+
+        // Tìm kiếm theo tên hoặc email
+        if ($request->has('search') && $request->search != '') {
+            $search = $request->search;
+            $query->where(function($q) use ($search) {
+                $q->where('name', 'like', '%' . $search . '%')
+                  ->orWhere('email', 'like', '%' . $search . '%');
+            });
+        }
+
+        // Lọc theo trạng thái
+        if ($request->has('status') && $request->status != '') {
+            $query->where('status', $request->status);
+        }
+
+        // Lọc theo vai trò
+        if ($request->has('role') && $request->role != '') {
+            $query->where('role', $request->role);
+        }
+
+        $users = $query->paginate(15);
+
+        // Thống kê
+        $totalUsers = User::count();
+        $activeUsers = User::where('status', 'active')->count();
+        $blockedUsers = User::where('status', 'blocked')->count();
+
+        return view('admin.users.index', compact('users', 'totalUsers', 'activeUsers', 'blockedUsers'));
     }
 
     public function create()
@@ -65,6 +99,48 @@ class UserController extends Controller
         $user->save();
 
         return redirect()->route('admin.users.index')->with('success', 'Cập nhật thông tin người dùng thành công!');
+    }
+
+    /**
+     * Hiển thị chi tiết người dùng
+     */
+    public function show(User $user)
+    {
+        // Tính toán thống kê
+        $statistics = [
+            'favorite_count' => FavoriteDish::where('user_id', $user->id)->count(),
+            'review_count' => Review::where('user_id', $user->id)->count(),
+            // Note: viewed_count, cooked_count, scan_count chưa có trong database
+            // Có thể thêm sau nếu cần
+            'viewed_count' => 0,
+            'cooked_count' => 0,
+            'scan_count' => 0,
+        ];
+
+        return view('admin.users.show', compact('user', 'statistics'));
+    }
+
+    /**
+     * Cập nhật trạng thái user (block/unblock)
+     */
+    public function updateStatus(Request $request, User $user)
+    {
+        // Ngăn admin tự khóa chính mình
+        if ($user->id === auth()->id()) {
+            return back()->with('error', 'Bạn không thể khóa chính mình!');
+        }
+
+        $validated = $request->validate([
+            'status' => 'required|in:active,blocked',
+        ]);
+
+        $user->update(['status' => $validated['status']]);
+
+        $message = $validated['status'] === 'active' 
+            ? 'Đã mở khóa tài khoản thành công!' 
+            : 'Đã khóa tài khoản thành công!';
+
+        return back()->with('success', $message);
     }
 
     public function destroy(User $user)

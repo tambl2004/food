@@ -23,6 +23,7 @@ class User extends Authenticatable implements MustVerifyEmail // <-- SỬA DÒNG
         'password',
         'role', // Thêm 'role' vào đây nếu bạn chưa có
         'google_id', // Thêm google_id để hỗ trợ OAuth
+        'status', // Trạng thái: active / blocked
     ];
 
     /**
@@ -46,6 +47,7 @@ class User extends Authenticatable implements MustVerifyEmail // <-- SỬA DÒNG
             'email_verified_at' => 'datetime',
             'password' => 'hashed',
             'role' => UserRole::class,
+            'last_login' => 'datetime',
         ];
     }
     // Relationship với Review

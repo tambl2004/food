@@ -96,7 +96,8 @@ Route::middleware(['auth', 'admin'])->prefix('admin')->name('admin.')->group(fun
     Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
     Route::resource('products', AdminProductController::class);
     Route::resource('categories', AdminCategoryController::class);
-    Route::resource('users', AdminUserController::class);
+    Route::resource('users', AdminUserController::class)->only(['index', 'show']);
+    Route::put('/users/{user}/status', [AdminUserController::class, 'updateStatus'])->name('users.updateStatus');
     Route::resource('news', AdminNewsController::class);
     
     // Admin Reviews Management

@@ -40,6 +40,7 @@
                     $isDashboard = request()->routeIs('admin.dashboard');
                     $isFavoriteDishes = request()->routeIs('admin.favorite-dishes.*');
                     $isIngredients = request()->routeIs('admin.ingredients.*');
+                    $isUsers = request()->routeIs('admin.users.*');
                 @endphp
                 <a href="{{ route('admin.dashboard') }}" class="flex items-center space-x-3 px-4 py-3 rounded-lg {{ $isDashboard ? 'bg-green-50 text-green-600' : 'text-gray-700 hover:bg-gray-100' }} transition">
                     <i class="fas fa-home w-5"></i>
@@ -59,9 +60,12 @@
                 </a>
                 <a href="{{ route('admin.favorite-dishes.index') }}" class="flex items-center space-x-3 px-4 py-3 rounded-lg {{ $isFavoriteDishes ? 'bg-green-50 text-green-600' : 'text-gray-700 hover:bg-gray-100' }} transition">
                     <i class="fas fa-heart w-5"></i>
-                    <span>Yêu thích</span>
+                    <span>Món ăn yêu thích</span>
                 </a>
-
+                <a href="{{ route('admin.users.index') }}" class="flex items-center space-x-3 px-4 py-3 rounded-lg {{ $isUsers ? 'bg-green-50 text-green-600' : 'text-gray-700 hover:bg-gray-100' }} transition">
+                    <i class="fas fa-users w-5"></i>
+                    <span>Quản lý người dùng</span>
+                </a>
                 <!-- Eating Habits Section -->
                 <div class="pt-6 mt-6 border-t border-gray-200">
                     <p class="text-xs font-semibold text-gray-500 uppercase px-4 mb-2">THÓI QUEN ĂN UỐNG</p>
