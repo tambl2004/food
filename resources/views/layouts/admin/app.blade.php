@@ -77,7 +77,13 @@
                     <i class="fas fa-users w-5"></i>
                     <span>Quản lý người dùng</span>
                 </a>
-               
+                <form action="{{ route('logout') }}" method="POST" class="px-1">
+                    @csrf
+                    <button type="submit" class="flex items-center space-x-3 w-full text-gray-700 hover:bg-gray-100 rounded-lg px-4 py-3 transition">
+                        <i class="fas fa-sign-out-alt w-5"></i>
+                        <span>Đăng xuất</span>
+                    </button>
+                </form>
             </nav>
 
             <!-- User Profile Section -->

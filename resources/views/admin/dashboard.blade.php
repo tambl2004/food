@@ -1,350 +1,426 @@
 @extends('layouts.admin.app')
 
-@section('title', 'Dashboard')
+@section('title', 'Dashboard Thống kê')
+
+@section('scripts')
+<!-- Chart.js -->
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+@endsection
 
 @section('content')
 <div class="space-y-6">
-    <!-- AI Recommendation Banner -->
-    <div class="bg-gradient-to-r from-green-500 to-green-600 rounded-xl p-6 text-white relative overflow-hidden">
-        <div class="relative z-10">
-            <div class="flex items-center space-x-2 mb-2">
-                <span class="text-green-100 font-semibold text-sm uppercase tracking-wide">AI RECOMMENDATION</span>
-            </div>
-            <h2 class="text-2xl font-bold mb-2">Món ăn phù hợp với bạn hôm nay</h2>
-            <p class="text-green-50 mb-4 max-w-2xl">
-                Dựa trên thói quen ăn uống và nguyên liệu sẵn có, AI đề xuất 3 món ăn tốt nhất cho bữa tối của bạn
-            </p>
-            <button class="bg-white text-green-600 px-6 py-2 rounded-lg font-semibold hover:bg-green-50 transition flex items-center space-x-2">
-                <span>Xem gợi ý</span>
-                <i class="fas fa-arrow-right"></i>
-            </button>
-        </div>
-        <div class="absolute right-0 top-0 bottom-0 w-64 opacity-20">
-            <i class="fas fa-robot text-9xl text-white"></i>
+    <!-- Header -->
+    <div class="flex items-center justify-between">
+        <div>
+            <h1 class="text-3xl font-bold text-gray-800">Dashboard Thống kê</h1>
+            <p class="text-gray-600 mt-1">Tổng quan hoạt động hệ thống và hiệu quả AI</p>
         </div>
     </div>
 
-    <!-- Statistics Cards -->
-    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-        <!-- Available Ingredients Card -->
+    <!-- 1. Summary Cards (Tổng quan nhanh) -->
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-6">
+        <!-- Tổng số người dùng -->
         <div class="bg-white rounded-xl p-6 shadow-sm border border-gray-100">
             <div class="flex items-center justify-between mb-4">
-                <div class="w-12 h-12 bg-purple-100 rounded-lg flex items-center justify-center">
-                    <i class="fas fa-lightbulb text-purple-600 text-xl"></i>
+                <div class="w-12 h-12 bg-blue-100 rounded-lg flex items-center justify-center">
+                    <i class="fas fa-users text-blue-600 text-xl"></i>
                 </div>
                 <span class="text-green-600 text-sm font-semibold flex items-center">
                     <i class="fas fa-arrow-up mr-1"></i>
-                    +12%
+                    +{{ $summary['new_users_today'] }} hôm nay
                 </span>
             </div>
-            <h3 class="text-gray-500 text-sm mb-1">Nguyên liệu có sẵn</h3>
-            <p class="text-3xl font-bold text-gray-800">24</p>
+            <h3 class="text-gray-500 text-sm mb-1">Tổng số người dùng</h3>
+            <p class="text-3xl font-bold text-gray-800">{{ number_format($summary['total_users']) }}</p>
+            <p class="text-xs text-gray-500 mt-1">{{ $summary['new_users_this_month'] }} người dùng mới trong tháng này</p>
         </div>
 
-        <!-- Suitable Recipes Card -->
+        <!-- Tổng số món ăn -->
+        <div class="bg-white rounded-xl p-6 shadow-sm border border-gray-100">
+            <div class="flex items-center justify-between mb-4">
+                <div class="w-12 h-12 bg-green-100 rounded-lg flex items-center justify-center">
+                    <i class="fas fa-utensils text-green-600 text-xl"></i>
+                </div>
+            </div>
+            <h3 class="text-gray-500 text-sm mb-1">Tổng số món ăn</h3>
+            <p class="text-3xl font-bold text-gray-800">{{ number_format($summary['total_dishes']) }}</p>
+            <p class="text-xs text-gray-500 mt-1">Món ăn trong hệ thống</p>
+        </div>
+
+        <!-- Tổng số nguyên liệu -->
         <div class="bg-white rounded-xl p-6 shadow-sm border border-gray-100">
             <div class="flex items-center justify-between mb-4">
                 <div class="w-12 h-12 bg-purple-100 rounded-lg flex items-center justify-center">
-                    <i class="fas fa-book text-purple-600 text-xl"></i>
+                    <i class="fas fa-list text-purple-600 text-xl"></i>
                 </div>
-                <span class="text-green-600 text-sm font-semibold flex items-center">
-                    <i class="fas fa-arrow-up mr-1"></i>
-                    +8
-                </span>
             </div>
-            <h3 class="text-gray-500 text-sm mb-1">Công thức phù hợp</h3>
-            <p class="text-3xl font-bold text-gray-800">156</p>
+            <h3 class="text-gray-500 text-sm mb-1">Tổng số nguyên liệu</h3>
+            <p class="text-3xl font-bold text-gray-800">{{ number_format($summary['total_ingredients']) }}</p>
+            <p class="text-xs text-gray-500 mt-1">Nguyên liệu trong hệ thống</p>
         </div>
 
-        <!-- Cooking Time Card -->
+        <!-- Số lượt gợi ý AI -->
         <div class="bg-white rounded-xl p-6 shadow-sm border border-gray-100">
             <div class="flex items-center justify-between mb-4">
                 <div class="w-12 h-12 bg-orange-100 rounded-lg flex items-center justify-center">
-                    <i class="fas fa-clock text-orange-600 text-xl"></i>
+                    <i class="fas fa-robot text-orange-600 text-xl"></i>
                 </div>
             </div>
-            <h3 class="text-gray-500 text-sm mb-1">Thời gian nấu</h3>
-            <p class="text-3xl font-bold text-gray-800">35 <span class="text-lg font-normal text-gray-500">phút</span></p>
-            <p class="text-sm text-gray-500 mt-1">Trung bình</p>
+            <h3 class="text-gray-500 text-sm mb-1">Số lượt gợi ý AI</h3>
+            <p class="text-3xl font-bold text-gray-800">{{ number_format($summary['total_ai_recommendations']) }}</p>
+            <p class="text-xs text-gray-500 mt-1">Tổng lượt gợi ý</p>
         </div>
 
-        <!-- Average Calories Card -->
+        <!-- Số lượt quét camera -->
         <div class="bg-white rounded-xl p-6 shadow-sm border border-gray-100">
             <div class="flex items-center justify-between mb-4">
-                <div class="w-12 h-12 bg-red-100 rounded-lg flex items-center justify-center">
-                    <i class="fas fa-fire text-red-600 text-xl"></i>
+                <div class="w-12 h-12 bg-pink-100 rounded-lg flex items-center justify-center">
+                    <i class="fas fa-camera text-pink-600 text-xl"></i>
                 </div>
             </div>
-            <h3 class="text-gray-500 text-sm mb-1">Calories trung bình</h3>
-            <p class="text-3xl font-bold text-gray-800">520 <span class="text-lg font-normal text-gray-500">kcal</span></p>
-            <p class="text-sm text-green-600 font-medium mt-1">Tốt</p>
+            <h3 class="text-gray-500 text-sm mb-1">Số lượt quét camera</h3>
+            <p class="text-3xl font-bold text-gray-800">{{ number_format($summary['total_camera_scans']) }}</p>
+            <p class="text-xs text-gray-500 mt-1">Tổng lượt quét</p>
         </div>
     </div>
 
-    <!-- Suggested Dishes Section with Ingredients -->
-    <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
-        <!-- Suggested Dishes - Takes 2 columns -->
-        <div class="lg:col-span-2 bg-white rounded-xl p-6 shadow-sm border border-gray-100">
+    <!-- 2. System Activity Charts (Biểu đồ hoạt động hệ thống) -->
+    <div class="bg-white rounded-xl p-6 shadow-sm border border-gray-100">
+        <h2 class="text-xl font-bold text-gray-800 mb-6">Hoạt động hệ thống (7 ngày gần nhất)</h2>
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+            <!-- Biểu đồ số user mới theo ngày -->
+            <div>
+                <h3 class="text-lg font-semibold text-gray-700 mb-4">Số người dùng mới theo ngày</h3>
+                <div style="height: 300px; position: relative;">
+                    <canvas id="userGrowthChart"></canvas>
+                </div>
+            </div>
+
+            <!-- Biểu đồ số lượt sử dụng AI -->
+            <div>
+                <h3 class="text-lg font-semibold text-gray-700 mb-4">Số lượt sử dụng AI gợi ý</h3>
+                <div style="height: 300px; position: relative;">
+                    <canvas id="aiUsageChart"></canvas>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 3. Recommendation Analytics (Thống kê gợi ý món ăn) -->
+    <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+        <!-- Top 5 món được gợi ý nhiều nhất -->
+        <div class="bg-white rounded-xl p-6 shadow-sm border border-gray-100">
             <div class="flex items-center justify-between mb-6">
-                <h2 class="text-xl font-bold text-gray-800">Món ăn được đề xuất</h2>
-                <a href="#" class="text-green-600 hover:text-green-700 font-medium flex items-center space-x-1">
-                    <span>Xem tất cả</span>
-                    <i class="fas fa-arrow-right"></i>
-                </a>
+                <h2 class="text-xl font-bold text-gray-800">Top 5 món được gợi ý nhiều nhất</h2>
             </div>
-
-            <div class="space-y-6">
-            <!-- Recipe Card 1: Phở bò -->
-            <div class="border border-gray-200 rounded-xl overflow-hidden hover:shadow-lg transition">
-                <div class="flex">
-                    <div class="w-48 h-48 bg-gray-200 flex-shrink-0">
-                        <img src="https://images.unsplash.com/photo-1526318896980-cf78c088247c?w=400&h=400&fit=crop" 
-                             alt="Phở bò truyền thống" 
-                             class="w-full h-full object-cover">
-                    </div>
-                    <div class="flex-1 p-6">
-                        <div class="flex items-start justify-between mb-3">
-                            <div>
-                                <h3 class="text-xl font-bold text-gray-800 mb-2">Phở bò truyền thống</h3>
-                                <div class="flex items-center space-x-4 text-sm text-gray-600">
-                                    <span class="flex items-center space-x-1">
-                                        <i class="fas fa-clock"></i>
-                                        <span>45 phút</span>
-                                    </span>
-                                    <span class="flex items-center space-x-1">
-                                        <i class="fas fa-fire"></i>
-                                        <span>450 kcal</span>
-                                    </span>
-                                    <span class="px-3 py-1 bg-gray-100 rounded-full text-xs">Trung bình</span>
+            @if($recommendationAnalytics['top_recommended_dishes']->count() > 0)
+                <div class="space-y-4">
+                    @foreach($recommendationAnalytics['top_recommended_dishes'] as $index => $item)
+                        <div class="flex items-center justify-between p-4 bg-gray-50 rounded-lg hover:bg-gray-100 transition">
+                            <div class="flex items-center space-x-4">
+                                <div class="w-10 h-10 bg-green-500 text-white rounded-lg flex items-center justify-center font-bold">
+                                    {{ $index + 1 }}
+                                </div>
+                                <div>
+                                    <h4 class="font-semibold text-gray-800">{{ $item['dish']->name }}</h4>
+                                    <p class="text-sm text-gray-500">{{ $item['count'] }} lượt</p>
                                 </div>
                             </div>
-                            <div class="flex items-center space-x-1 bg-green-50 px-3 py-1 rounded-full">
-                                <i class="fas fa-heart text-green-600"></i>
-                                <span class="text-green-600 font-semibold text-sm">98% phù hợp</span>
-                            </div>
+                            @php
+                                $routeName = isset($item['is_product']) && $item['is_product'] 
+                                    ? 'admin.products.show' 
+                                    : 'admin.dishes.show';
+                            @endphp
+                            @if(isset($item['dish']) && $item['dish'])
+                                <a href="{{ route($routeName, $item['dish']->id) }}" class="text-green-600 hover:text-green-700">
+                                    <i class="fas fa-arrow-right"></i>
+                                </a>
+                            @endif
                         </div>
-                        <p class="text-gray-600 mb-4 leading-relaxed">
-                            Món phở bò truyền thống với nước dùng đậm đà, thịt bò mềm và rau thơm tươi ngon. Phù hợp với khẩu vị và thói quen ăn uống của bạn.
-                        </p>
-                        <div class="flex items-center justify-between">
-                            <div class="flex items-center space-x-2 text-sm text-gray-600">
-                                <span class="font-medium">Nguyên liệu:</span>
-                                <span class="px-2 py-1 bg-gray-100 rounded">Thịt bò</span>
-                                <span class="px-2 py-1 bg-gray-100 rounded">Bánh phở</span>
-                                <span class="px-2 py-1 bg-gray-100 rounded">Rau thơm</span>
-                            </div>
-                            <button class="bg-green-600 text-white px-6 py-2 rounded-lg font-semibold hover:bg-green-700 transition">
-                                Nấu ngay
-                            </button>
-                        </div>
-                    </div>
+                    @endforeach
                 </div>
-            </div>
-
-            <!-- Recipe Card 2: Gà xào rau củ -->
-            <div class="border border-gray-200 rounded-xl overflow-hidden hover:shadow-lg transition">
-                <div class="flex">
-                    <div class="w-48 h-48 bg-gray-200 flex-shrink-0">
-                        <img src="https://images.unsplash.com/photo-1621996346565-e3dbc646d9a9?w=400&h=400&fit=crop" 
-                             alt="Gà xào rau củ" 
-                             class="w-full h-full object-cover">
-                    </div>
-                    <div class="flex-1 p-6">
-                        <div class="flex items-start justify-between mb-3">
-                            <div>
-                                <h3 class="text-xl font-bold text-gray-800 mb-2">Gà xào rau củ</h3>
-                                <div class="flex items-center space-x-4 text-sm text-gray-600">
-                                    <span class="flex items-center space-x-1">
-                                        <i class="fas fa-clock"></i>
-                                        <span>30 phút</span>
-                                    </span>
-                                    <span class="flex items-center space-x-1">
-                                        <i class="fas fa-fire"></i>
-                                        <span>380 kcal</span>
-                                    </span>
-                                    <span class="px-3 py-1 bg-green-100 text-green-700 rounded-full text-xs">Dễ</span>
-                                </div>
-                            </div>
-                            <div class="flex items-center space-x-1 bg-green-50 px-3 py-1 rounded-full">
-                                <i class="fas fa-heart text-green-600"></i>
-                                <span class="text-green-600 font-semibold text-sm">95% phù hợp</span>
-                            </div>
-                        </div>
-                        <p class="text-gray-600 mb-4 leading-relaxed">
-                            Món ăn nhẹ nhàng, giàu protein và vitamin từ rau củ tươi. Phù hợp cho bữa tối lành mạnh và nhanh chóng.
-                        </p>
-                        <div class="flex items-center justify-between">
-                            <div class="flex items-center space-x-2 text-sm text-gray-600">
-                                <span class="font-medium">Nguyên liệu:</span>
-                                <span class="px-2 py-1 bg-gray-100 rounded">Thịt gà</span>
-                                <span class="px-2 py-1 bg-gray-100 rounded">Cà rốt</span>
-                                <span class="px-2 py-1 bg-gray-100 rounded">Ớt chuông</span>
-                            </div>
-                            <button class="bg-green-600 text-white px-6 py-2 rounded-lg font-semibold hover:bg-green-700 transition">
-                                Nấu ngay
-                            </button>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Recipe Card 3: Cá hồi nướng chanh -->
-            <div class="border border-gray-200 rounded-xl overflow-hidden hover:shadow-lg transition">
-                <div class="flex">
-                    <div class="w-48 h-48 bg-gray-200 flex-shrink-0">
-                        <img src="https://images.unsplash.com/photo-1467003909585-2f8a72700288?w=400&h=400&fit=crop" 
-                             alt="Cá hồi nướng chanh" 
-                             class="w-full h-full object-cover">
-                    </div>
-                    <div class="flex-1 p-6">
-                        <div class="flex items-start justify-between mb-3">
-                            <div>
-                                <h3 class="text-xl font-bold text-gray-800 mb-2">Cá hồi nướng chanh</h3>
-                                <div class="flex items-center space-x-4 text-sm text-gray-600">
-                                    <span class="flex items-center space-x-1">
-                                        <i class="fas fa-clock"></i>
-                                        <span>25 phút</span>
-                                    </span>
-                                    <span class="flex items-center space-x-1">
-                                        <i class="fas fa-fire"></i>
-                                        <span>420 kcal</span>
-                                    </span>
-                                    <span class="px-3 py-1 bg-green-100 text-green-700 rounded-full text-xs">Dễ</span>
-                                </div>
-                            </div>
-                            <div class="flex items-center space-x-1 bg-green-50 px-3 py-1 rounded-full">
-                                <i class="fas fa-heart text-green-600"></i>
-                                <span class="text-green-600 font-semibold text-sm">92% phù hợp</span>
-                            </div>
-                        </div>
-                        <p class="text-gray-600 mb-4 leading-relaxed">
-                            Cá hồi giàu omega-3, nướng thơm phức cùng chanh tươi và thảo mộc. Món ăn healthy cho người quan tâm sức khỏe.
-                        </p>
-                        <div class="flex items-center justify-between">
-                            <div class="flex items-center space-x-2 text-sm text-gray-600">
-                                <span class="font-medium">Nguyên liệu:</span>
-                                <span class="px-2 py-1 bg-gray-100 rounded">Cá hồi</span>
-                                <span class="px-2 py-1 bg-gray-100 rounded">Chanh</span>
-                                <span class="px-2 py-1 bg-gray-100 rounded">Thảo mộc</span>
-                            </div>
-                            <button class="bg-green-600 text-white px-6 py-2 rounded-lg font-semibold hover:bg-green-700 transition">
-                                Nấu ngay
-                            </button>
-                        </div>
-                    </div>
-                </div>
-            </div>
+            @else
+                <p class="text-gray-500 text-center py-8">Chưa có dữ liệu</p>
+            @endif
         </div>
-    </div>
 
-        <!-- Your Ingredients Section - Takes 1 column -->
-        <div class="lg:col-span-1 bg-white rounded-xl p-6 shadow-sm border border-gray-100">
-            <div class="flex items-center justify-between mb-4">
-                <h3 class="text-lg font-bold text-gray-800">Nguyên liệu của bạn</h3>
-                <button class="text-green-600 hover:text-green-700">
-                    <i class="fas fa-plus"></i>
-                </button>
+        <!-- Top 5 món được nấu nhiều nhất -->
+        <div class="bg-white rounded-xl p-6 shadow-sm border border-gray-100">
+            <div class="flex items-center justify-between mb-6">
+                <h2 class="text-xl font-bold text-gray-800">Top 5 món được nấu nhiều nhất</h2>
             </div>
-            
-            <!-- Search Input -->
-            <div class="relative mb-4">
-                <input type="text" 
-                       placeholder="Tìm nguyên liệu..." 
-                       class="w-full pl-9 pr-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent">
-                <i class="fas fa-search absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400"></i>
-            </div>
+            @if($recommendationAnalytics['top_cooked_dishes']->count() > 0)
+                <div class="space-y-4">
+                    @foreach($recommendationAnalytics['top_cooked_dishes'] as $index => $item)
+                        <div class="flex items-center justify-between p-4 bg-gray-50 rounded-lg hover:bg-gray-100 transition">
+                            <div class="flex items-center space-x-4">
+                                <div class="w-10 h-10 bg-orange-500 text-white rounded-lg flex items-center justify-center font-bold">
+                                    {{ $index + 1 }}
+                                </div>
+                                <div>
+                                    <h4 class="font-semibold text-gray-800">{{ $item['dish']->name }}</h4>
+                                    <p class="text-sm text-gray-500">{{ $item['count'] }} lượt</p>
+                                </div>
+                            </div>
+                            @php
+                                $routeName = isset($item['is_product']) && $item['is_product'] 
+                                    ? 'admin.products.show' 
+                                    : 'admin.dishes.show';
+                            @endphp
+                            @if(isset($item['dish']) && $item['dish'])
+                                <a href="{{ route($routeName, $item['dish']->id) }}" class="text-green-600 hover:text-green-700">
+                                    <i class="fas fa-arrow-right"></i>
+                                </a>
+                            @endif
+                        </div>
+                    @endforeach
+                </div>
+            @else
+                <p class="text-gray-500 text-center py-8">Chưa có dữ liệu</p>
+            @endif
 
-            <!-- Ingredients List -->
-            <div class="space-y-3 mb-4">
-                <div class="flex items-center justify-between p-3 bg-gray-50 rounded-lg hover:bg-gray-100 transition">
-                    <div>
-                        <p class="font-medium text-gray-800">Cà rốt</p>
-                        <p class="text-sm text-gray-500">500g</p>
-                    </div>
-                    <button class="text-gray-400 hover:text-red-600">
-                        <i class="fas fa-times"></i>
-                    </button>
-                </div>
-                <div class="flex items-center justify-between p-3 bg-gray-50 rounded-lg hover:bg-gray-100 transition">
-                    <div>
-                        <p class="font-medium text-gray-800">Thịt gà</p>
-                        <p class="text-sm text-gray-500">800g</p>
-                    </div>
-                    <button class="text-gray-400 hover:text-red-600">
-                        <i class="fas fa-times"></i>
-                    </button>
-                </div>
-                <div class="flex items-center justify-between p-3 bg-gray-50 rounded-lg hover:bg-gray-100 transition">
-                    <div>
-                        <p class="font-medium text-gray-800">Ớt chuông</p>
-                        <p class="text-sm text-gray-500">300g</p>
-                    </div>
-                    <button class="text-gray-400 hover:text-red-600">
-                        <i class="fas fa-times"></i>
-                    </button>
-                </div>
-                <div class="flex items-center justify-between p-3 bg-gray-50 rounded-lg hover:bg-gray-100 transition">
-                    <div>
-                        <p class="font-medium text-gray-800">Cá hồi</p>
-                    </div>
-                    <button class="text-gray-400 hover:text-red-600">
-                        <i class="fas fa-times"></i>
-                    </button>
-                </div>
-            </div>
-
-            <button class="w-full py-2 border-2 border-dashed border-gray-300 rounded-lg text-gray-600 hover:border-green-500 hover:text-green-600 transition font-medium">
-                <i class="fas fa-plus mr-2"></i>
-                Thêm nguyên liệu
-            </button>
-
-            <!-- Eating Preferences Section -->
+            <!-- Tỷ lệ chuyển đổi -->
             <div class="mt-6 pt-6 border-t border-gray-200">
-                <h3 class="text-lg font-bold text-gray-800 mb-4">Sở thích ăn uống</h3>
-                
-                <!-- Taste Section -->
-                <div class="mb-6">
-                    <p class="text-sm font-semibold text-gray-600 mb-2">Khẩu vị</p>
-                    <div class="flex flex-wrap gap-2">
-                        <span class="px-3 py-1 bg-green-100 text-green-700 rounded-full text-sm font-medium">Cay</span>
-                        <span class="px-3 py-1 bg-green-100 text-green-700 rounded-full text-sm font-medium">Ngọt</span>
-                        <span class="px-3 py-1 bg-green-100 text-green-700 rounded-full text-sm font-medium">Chua</span>
-                        <span class="px-3 py-1 bg-green-100 text-green-700 rounded-full text-sm font-medium">Mặn</span>
-                    </div>
+                <div class="flex items-center justify-between mb-2">
+                    <span class="text-sm text-gray-600">Tỷ lệ chuyển đổi (Gợi ý → Nấu)</span>
+                    <span class="text-lg font-bold text-green-600">{{ number_format($recommendationAnalytics['recommendation_to_cook_rate'], 1) }}%</span>
                 </div>
-
-                <!-- Dish Type Section -->
-                <div class="mb-6">
-                    <p class="text-sm font-semibold text-gray-600 mb-2">Loại món</p>
-                    <div class="flex flex-wrap gap-2">
-                        <span class="px-3 py-1 bg-blue-100 text-blue-700 rounded-full text-sm font-medium">Việt Nam</span>
-                        <span class="px-3 py-1 bg-blue-100 text-blue-700 rounded-full text-sm font-medium">Hàn Quốc</span>
-                        <span class="px-3 py-1 bg-blue-100 text-blue-700 rounded-full text-sm font-medium">Nhật Bản</span>
-                        <span class="px-3 py-1 bg-blue-100 text-blue-700 rounded-full text-sm font-medium">Healthy</span>
-                    </div>
+                <div class="w-full bg-gray-200 rounded-full h-3">
+                    <div class="bg-green-600 h-3 rounded-full" style="width: {{ min($recommendationAnalytics['recommendation_to_cook_rate'], 100) }}%"></div>
                 </div>
-
-                <!-- Restrictions Section -->
-                <div class="mb-6">
-                    <p class="text-sm font-semibold text-gray-600 mb-2">Hạn chế</p>
-                    <div class="flex flex-wrap gap-2">
-                        <span class="px-3 py-1 bg-red-100 text-red-700 rounded-full text-sm font-medium flex items-center">
-                            <i class="fas fa-circle text-red-500 text-xs mr-2"></i>
-                            Đậu phộng
-                        </span>
-                        <span class="px-3 py-1 bg-red-100 text-red-700 rounded-full text-sm font-medium flex items-center">
-                            <i class="fas fa-circle text-red-500 text-xs mr-2"></i>
-                            Hải sản
-                        </span>
-                    </div>
-                </div>
-
-                <button class="w-full py-2 bg-gray-100 text-gray-700 rounded-lg hover:bg-gray-200 transition font-medium flex items-center justify-center space-x-2">
-                    <i class="fas fa-pencil-alt"></i>
-                    <span>Chỉnh sửa</span>
-                </button>
             </div>
         </div>
     </div>
+
+    <!-- 4. Review Analytics (Thống kê đánh giá & Feedback) -->
+    <div class="bg-white rounded-xl p-6 shadow-sm border border-gray-100">
+        <div class="flex items-center justify-between mb-6">
+            <h2 class="text-xl font-bold text-gray-800">Thống kê đánh giá & Feedback</h2>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+            <!-- Điểm đánh giá trung bình -->
+            <div class="text-center p-6 bg-blue-50 rounded-xl">
+                <i class="fas fa-star text-blue-600 text-3xl mb-3"></i>
+                <p class="text-3xl font-bold text-gray-800">{{ $reviewAnalytics['average_rating'] }}</p>
+                <p class="text-sm text-gray-600 mt-1">Điểm đánh giá trung bình</p>
+                <p class="text-xs text-gray-500 mt-2">Tổng: {{ number_format($reviewAnalytics['total_reviews']) }} đánh giá</p>
+            </div>
+
+            <!-- Top món được đánh giá cao -->
+            <div class="text-center p-6 bg-green-50 rounded-xl">
+                <i class="fas fa-thumbs-up text-green-600 text-3xl mb-3"></i>
+                <p class="text-3xl font-bold text-gray-800">{{ $reviewAnalytics['top_rated_dishes']->count() }}</p>
+                <p class="text-sm text-gray-600 mt-1">Món được đánh giá cao</p>
+            </div>
+
+            <!-- Món cần cải thiện -->
+            <div class="text-center p-6 bg-orange-50 rounded-xl">
+                <i class="fas fa-exclamation-triangle text-orange-600 text-3xl mb-3"></i>
+                <p class="text-3xl font-bold text-gray-800">{{ $reviewAnalytics['low_rated_dishes']->count() }}</p>
+                <p class="text-sm text-gray-600 mt-1">Món cần cải thiện</p>
+            </div>
+        </div>
+
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+            <!-- Top món được đánh giá cao -->
+            <div>
+                <h3 class="text-lg font-semibold text-gray-700 mb-4">Top món được đánh giá cao</h3>
+                @if($reviewAnalytics['top_rated_dishes']->count() > 0)
+                    <div class="space-y-3">
+                        @foreach($reviewAnalytics['top_rated_dishes'] as $item)
+                            <div class="flex items-center justify-between p-4 bg-gray-50 rounded-lg">
+                                <div class="flex items-center space-x-4">
+                                    <div>
+                                        <h4 class="font-semibold text-gray-800">{{ $item['dish']->name }}</h4>
+                                        <div class="flex items-center space-x-2 mt-1">
+                                            @for($i = 1; $i <= 5; $i++)
+                                                <i class="fas fa-star {{ $i <= $item['avg_rating'] ? 'text-yellow-400' : 'text-gray-300' }} text-xs"></i>
+                                            @endfor
+                                            <span class="text-sm text-gray-600 ml-2">{{ $item['avg_rating'] }} ({{ $item['review_count'] }} đánh giá)</span>
+                                        </div>
+                                    </div>
+                                </div>
+                                <a href="{{ route('admin.dishes.show', $item['dish']->id) }}" class="text-green-600 hover:text-green-700">
+                                    <i class="fas fa-arrow-right"></i>
+                                </a>
+                            </div>
+                        @endforeach
+                    </div>
+                @else
+                    <p class="text-gray-500 text-center py-4">Chưa có dữ liệu</p>
+                @endif
+            </div>
+
+            <!-- Top món bị đánh giá thấp -->
+            <div>
+                <h3 class="text-lg font-semibold text-gray-700 mb-4">Món cần cải thiện</h3>
+                @if($reviewAnalytics['low_rated_dishes']->count() > 0)
+                    <div class="space-y-3">
+                        @foreach($reviewAnalytics['low_rated_dishes'] as $item)
+                            <div class="flex items-center justify-between p-4 bg-gray-50 rounded-lg">
+                                <div class="flex items-center space-x-4">
+                                    <div>
+                                        <h4 class="font-semibold text-gray-800">{{ $item['dish']->name }}</h4>
+                                        <div class="flex items-center space-x-2 mt-1">
+                                            @for($i = 1; $i <= 5; $i++)
+                                                <i class="fas fa-star {{ $i <= $item['avg_rating'] ? 'text-yellow-400' : 'text-gray-300' }} text-xs"></i>
+                                            @endfor
+                                            <span class="text-sm text-gray-600 ml-2">{{ $item['avg_rating'] }} ({{ $item['review_count'] }} đánh giá)</span>
+                                        </div>
+                                    </div>
+                                </div>
+                                <a href="{{ route('admin.dishes.show', $item['dish']->id) }}" class="text-green-600 hover:text-green-700">
+                                    <i class="fas fa-arrow-right"></i>
+                                </a>
+                            </div>
+                        @endforeach
+                    </div>
+                @else
+                    <p class="text-gray-500 text-center py-4">Không có món nào cần cải thiện</p>
+                @endif
+            </div>
+        </div>
+    </div>
+
+    <!-- 5. Camera Analytics (Thống kê camera & dinh dưỡng) -->
+    @if($cameraAnalytics['total_scans'] > 0 || true) {{-- Placeholder: luôn hiển thị để demo --}}
+    <div class="bg-white rounded-xl p-6 shadow-sm border border-gray-100">
+        <div class="flex items-center justify-between mb-6">
+            <h2 class="text-xl font-bold text-gray-800">Thống kê Camera & Nhận diện</h2>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-6">
+            <div class="text-center p-6 bg-purple-50 rounded-xl">
+                <i class="fas fa-camera-retro text-purple-600 text-3xl mb-3"></i>
+                <p class="text-3xl font-bold text-gray-800">{{ number_format($cameraAnalytics['total_scans']) }}</p>
+                <p class="text-sm text-gray-600 mt-1">Tổng lượt quét</p>
+            </div>
+
+            <div class="text-center p-6 bg-blue-50 rounded-xl">
+                <i class="fas fa-check-circle text-blue-600 text-3xl mb-3"></i>
+                <p class="text-3xl font-bold text-gray-800">{{ number_format($cameraAnalytics['average_confidence'], 1) }}%</p>
+                <p class="text-sm text-gray-600 mt-1">Độ chính xác trung bình</p>
+            </div>
+
+            <div class="text-center p-6 bg-green-50 rounded-xl">
+                <i class="fas fa-calendar-day text-green-600 text-3xl mb-3"></i>
+                <p class="text-3xl font-bold text-gray-800">{{ number_format($cameraAnalytics['scans_today']) }}</p>
+                <p class="text-sm text-gray-600 mt-1">Lượt quét hôm nay</p>
+            </div>
+        </div>
+
+        @if($cameraAnalytics['top_scanned_ingredients']->count() > 0)
+            <div>
+                <h3 class="text-lg font-semibold text-gray-700 mb-4">Top nguyên liệu được quét nhiều nhất</h3>
+                <div class="space-y-3">
+                    @foreach($cameraAnalytics['top_scanned_ingredients'] as $index => $item)
+                        <div class="flex items-center justify-between p-4 bg-gray-50 rounded-lg">
+                            <div class="flex items-center space-x-4">
+                                <div class="w-10 h-10 bg-purple-500 text-white rounded-lg flex items-center justify-center font-bold">
+                                    {{ $index + 1 }}
+                                </div>
+                                <div>
+                                    <h4 class="font-semibold text-gray-800">{{ $item['ingredient']->name }}</h4>
+                                    <p class="text-sm text-gray-500">{{ $item['count'] }} lượt quét</p>
+                                </div>
+                            </div>
+                        </div>
+                    @endforeach
+                </div>
+            </div>
+        @else
+            <div class="text-center py-8">
+                <i class="fas fa-info-circle text-gray-400 text-4xl mb-3"></i>
+                <p class="text-gray-500">Chức năng camera quét nguyên liệu đang được phát triển</p>
+                <p class="text-sm text-gray-400 mt-2">Dữ liệu sẽ được cập nhật khi có bảng scan_history</p>
+            </div>
+        @endif
+    </div>
+    @endif
 </div>
+
+<script>
+// Initialize charts
+document.addEventListener('DOMContentLoaded', function() {
+    const chartColors = {
+        primary: 'rgb(34, 197, 94)',
+        secondary: 'rgb(59, 130, 246)',
+        tertiary: 'rgb(249, 115, 22)',
+    };
+
+    // User Growth Chart
+    const userGrowthCtx = document.getElementById('userGrowthChart');
+    if (userGrowthCtx) {
+        new Chart(userGrowthCtx, {
+            type: 'line',
+            data: {
+                labels: @json($activityCharts['labels']),
+                datasets: [{
+                    label: 'Người dùng mới',
+                    data: @json($activityCharts['user_growth']),
+                    borderColor: chartColors.secondary,
+                    backgroundColor: 'rgba(59, 130, 246, 0.1)',
+                    tension: 0.4,
+                    fill: true
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: {
+                        display: true,
+                        position: 'top'
+                    }
+                },
+                scales: {
+                    y: {
+                        beginAtZero: true,
+                        ticks: {
+                            stepSize: 1
+                        }
+                    }
+                }
+            }
+        });
+    }
+
+    // AI Usage Chart
+    const aiUsageCtx = document.getElementById('aiUsageChart');
+    if (aiUsageCtx) {
+        new Chart(aiUsageCtx, {
+            type: 'bar',
+            data: {
+                labels: @json($activityCharts['labels']),
+                datasets: [{
+                    label: 'Lượt sử dụng AI',
+                    data: @json($activityCharts['ai_usage']),
+                    backgroundColor: chartColors.tertiary,
+                    borderColor: chartColors.tertiary,
+                    borderWidth: 1
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: {
+                        display: true,
+                        position: 'top'
+                    }
+                },
+                scales: {
+                    y: {
+                        beginAtZero: true,
+                        ticks: {
+                            stepSize: 1
+                        }
+                    }
+                }
+            }
+        });
+    }
+});
+</script>
 @endsection
