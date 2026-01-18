@@ -9,6 +9,7 @@ use App\Http\Controllers\ContactController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\ReviewController;
 use App\Http\Controllers\UserPreferenceController;
+use App\Http\Controllers\UserIngredientController;
 
 
 // Controllers cho Admin
@@ -52,6 +53,13 @@ Route::middleware('auth')->group(function () {
     Route::get('/preferences', [UserPreferenceController::class, 'show'])->name('preferences.show');
     Route::put('/preferences', [UserPreferenceController::class, 'update'])->name('preferences.update');
     Route::post('/preferences/reset', [UserPreferenceController::class, 'reset'])->name('preferences.reset');
+    
+    // Nguyên liệu của tôi
+    Route::get('/user/ingredients', [UserIngredientController::class, 'index'])->name('user.ingredients.index');
+    Route::post('/user/ingredients', [UserIngredientController::class, 'store'])->name('user.ingredients.store');
+    Route::put('/user/ingredients/{userIngredient}', [UserIngredientController::class, 'update'])->name('user.ingredients.update');
+    Route::delete('/user/ingredients/{userIngredient}', [UserIngredientController::class, 'destroy'])->name('user.ingredients.destroy');
+    Route::get('/api/user/ingredients/search', [UserIngredientController::class, 'getIngredients'])->name('api.user.ingredients.search');
 });
 
 // Trang hiển thị TẤT CẢ sản phẩm

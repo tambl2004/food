@@ -76,4 +76,18 @@ class User extends Authenticatable implements MustVerifyEmail // <-- SỬA DÒNG
     {
         return $this->hasOne(UserPreference::class);
     }
+
+    // Relationship với UserIngredient
+    public function userIngredients()
+    {
+        return $this->hasMany(UserIngredient::class);
+    }
+
+    // Relationship với Ingredient qua UserIngredient
+    public function ingredients()
+    {
+        return $this->belongsToMany(Ingredient::class, 'user_ingredients')
+                    ->withPivot('quantity', 'unit', 'updated_at')
+                    ->withTimestamps();
+    }
 }

@@ -41,6 +41,16 @@ class Ingredient extends Model
     }
 
     /**
+     * Relationship với User qua UserIngredient
+     */
+    public function users()
+    {
+        return $this->belongsToMany(User::class, 'user_ingredients')
+                    ->withPivot('quantity', 'unit', 'updated_at')
+                    ->withTimestamps();
+    }
+
+    /**
      * Scope để lấy nguyên liệu active
      */
     public function scopeActive($query)
