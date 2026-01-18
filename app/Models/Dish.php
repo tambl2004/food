@@ -180,5 +180,35 @@ class Dish extends Model
         }
         return null;
     }
+
+    /**
+     * Relationship với UserFoodHistory
+     */
+    public function userFoodHistories()
+    {
+        return $this->hasMany(UserFoodHistory::class);
+    }
+
+    /**
+     * Relationship với User qua UserFoodHistory
+     */
+    public function viewedByUsers()
+    {
+        return $this->belongsToMany(User::class, 'user_food_histories')
+                    ->wherePivot('action', 'viewed')
+                    ->withPivot('action_at')
+                    ->withTimestamps();
+    }
+
+    /**
+     * Relationship với User qua UserFoodHistory (cooked)
+     */
+    public function cookedByUsers()
+    {
+        return $this->belongsToMany(User::class, 'user_food_histories')
+                    ->wherePivot('action', 'cooked')
+                    ->withPivot('action_at')
+                    ->withTimestamps();
+    }
 }
 

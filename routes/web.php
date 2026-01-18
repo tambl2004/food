@@ -10,6 +10,8 @@ use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\ReviewController;
 use App\Http\Controllers\UserPreferenceController;
 use App\Http\Controllers\UserIngredientController;
+use App\Http\Controllers\DishController;
+use App\Http\Controllers\RecommendationController;
 
 
 // Controllers cho Admin
@@ -60,11 +62,21 @@ Route::middleware('auth')->group(function () {
     Route::put('/user/ingredients/{userIngredient}', [UserIngredientController::class, 'update'])->name('user.ingredients.update');
     Route::delete('/user/ingredients/{userIngredient}', [UserIngredientController::class, 'destroy'])->name('user.ingredients.destroy');
     Route::get('/api/user/ingredients/search', [UserIngredientController::class, 'getIngredients'])->name('api.user.ingredients.search');
+    Route::get('/user/ingredients/find-dishes', [UserIngredientController::class, 'findDishes'])->name('user.ingredients.find-dishes');
+    
+    // Gợi ý món ăn
+    Route::get('/recommendations', [RecommendationController::class, 'index'])->name('recommendations.index');
+    Route::get('/api/recommendations', [RecommendationController::class, 'getRecommendationsApi'])->name('api.recommendations');
+    Route::post('/recommendations/dishes/{dish}/view', [RecommendationController::class, 'logView'])->name('recommendations.log-view');
+    Route::post('/recommendations/dishes/{dish}/cook', [RecommendationController::class, 'logCook'])->name('recommendations.log-cook');
 });
 
 // Trang hiển thị TẤT CẢ sản phẩm
 Route::get('/products', [ProductController::class, 'index'])->name('products.index');
 Route::get('/products/{product}', [ProductController::class, 'show'])->name('products.show');
+
+// Trang hiển thị chi tiết món ăn (Dish)
+Route::get('/dishes/{dish}', [DishController::class, 'show'])->name('dishes.show');
 
 // Tin tức
 Route::get('/news', [NewsController::class, 'index'])->name('news.index');

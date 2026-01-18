@@ -4,10 +4,12 @@ namespace App\Http\Controllers;
 
 use App\Models\Ingredient;
 use App\Models\UserIngredient;
+use App\Models\Dish;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\View\View;
+use Illuminate\Support\Facades\DB;
 
 class UserIngredientController extends Controller
 {
@@ -50,9 +52,35 @@ class UserIngredientController extends Controller
             ->sort()
             ->values();
 
+        // Tính số món ăn có thể nấu (100% đủ nguyên liệu)
+        $cookableDishesCount = 0;
+        if ($userIngredients->count() > 0) {
+            $userIngredientIds = $userIngredients->pluck('ingredient_id')->toArray();
+            
+            $dishes = Dish::where('status', 'active')
+                ->whereHas('ingredients', function($query) use ($userIngredientIds) {
+                    $query->whereIn('ingredients.id', $userIngredientIds);
+                })
+                ->with('ingredients')
+                ->get();
+
+            foreach ($dishes as $dish) {
+                $dishIngredientIds = $dish->ingredients->pluck('id')->toArray();
+                $matchedIngredients = array_intersect($dishIngredientIds, $userIngredientIds);
+                $totalIngredients = count($dishIngredientIds);
+                $matchedCount = count($matchedIngredients);
+                
+                // Nếu đủ 100% nguyên liệu
+                if ($matchedCount === $totalIngredients && $totalIngredients > 0) {
+                    $cookableDishesCount++;
+                }
+            }
+        }
+
         return view('customer.ingredients.index', [
             'userIngredients' => $userIngredients,
             'ingredientTypes' => $ingredientTypes,
+            'cookableDishesCount' => $cookableDishesCount,
         ]);
     }
 
@@ -75,10 +103,11 @@ class UserIngredientController extends Controller
             ->first();
 
         if ($existing) {
-            // Nếu đã tồn tại, cập nhật quantity và unit
+            // Nếu đã tồn tại, cập nhật quantity và unit và reset added_at
             $existing->update([
                 'quantity' => $validated['quantity'] ?? $existing->quantity,
                 'unit' => $validated['unit'] ?? $existing->unit,
+                'added_at' => now(), // Reset ngày thêm khi cập nhật
             ]);
 
             if ($request->expectsJson()) {
@@ -95,6 +124,7 @@ class UserIngredientController extends Controller
 
         // Nếu chưa tồn tại, tạo mới
         $validated['user_id'] = $user->id;
+        $validated['added_at'] = now(); // Thêm ngày thêm vào tủ lạnh
         $userIngredient = UserIngredient::create($validated);
         $userIngredient->load('ingredient');
 
@@ -187,10 +217,14 @@ class UserIngredientController extends Controller
     public function getIngredients(Request $request): JsonResponse
     {
         $search = $request->get('search', '');
+        $type = $request->get('type', '');
         
         $ingredients = Ingredient::where('status', 'active')
             ->when($search, function($query) use ($search) {
                 $query->where('name', 'like', '%' . $search . '%');
+            })
+            ->when($type, function($query) use ($type) {
+                $query->where('type', $type);
             })
             ->orderBy('name')
             ->limit(50)
@@ -199,6 +233,75 @@ class UserIngredientController extends Controller
         return response()->json([
             'success' => true,
             'data' => $ingredients,
+        ]);
+    }
+
+    /**
+     * Tìm kiếm món ăn dựa trên nguyên liệu của user
+     */
+    public function findDishes(Request $request): View|JsonResponse
+    {
+        $user = $request->user();
+        
+        // Lấy danh sách ingredient_id mà user có
+        $userIngredientIds = UserIngredient::where('user_id', $user->id)
+            ->whereHas('ingredient')
+            ->pluck('ingredient_id')
+            ->toArray();
+
+        if (empty($userIngredientIds)) {
+            if ($request->expectsJson()) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Bạn chưa có nguyên liệu nào trong tủ lạnh!',
+                ], 400);
+            }
+            return redirect()->route('user.ingredients.index')
+                ->with('error', 'Bạn chưa có nguyên liệu nào trong tủ lạnh!');
+        }
+
+        // Lấy tất cả món ăn có chứa ít nhất một nguyên liệu mà user có
+        $dishes = Dish::where('status', 'active')
+            ->whereHas('ingredients', function($query) use ($userIngredientIds) {
+                $query->whereIn('ingredients.id', $userIngredientIds);
+            })
+            ->with(['ingredients' => function($query) {
+                $query->select('ingredients.id', 'ingredients.name', 'ingredients.type');
+            }])
+            ->with('category')
+            ->get();
+
+        // Tính toán tỷ lệ nguyên liệu đủ cho mỗi món
+        $dishesWithMatchRate = $dishes->map(function($dish) use ($userIngredientIds) {
+            $dishIngredientIds = $dish->ingredients->pluck('id')->toArray();
+            $matchedIngredients = array_intersect($dishIngredientIds, $userIngredientIds);
+            $totalIngredients = count($dishIngredientIds);
+            $matchedCount = count($matchedIngredients);
+            $matchRate = $totalIngredients > 0 ? ($matchedCount / $totalIngredients) * 100 : 0;
+            
+            // Lấy nguyên liệu còn thiếu
+            $missingIngredientIds = array_diff($dishIngredientIds, $userIngredientIds);
+            $missingIngredients = Ingredient::whereIn('id', $missingIngredientIds)->get(['id', 'name', 'type']);
+
+            return [
+                'dish' => $dish,
+                'matched_count' => $matchedCount,
+                'total_count' => $totalIngredients,
+                'match_rate' => round($matchRate, 1),
+                'missing_ingredients' => $missingIngredients,
+            ];
+        })->sortByDesc('match_rate');
+
+        if ($request->expectsJson()) {
+            return response()->json([
+                'success' => true,
+                'data' => $dishesWithMatchRate->values(),
+            ]);
+        }
+
+        return view('customer.ingredients.dishes', [
+            'dishesWithMatchRate' => $dishesWithMatchRate,
+            'userIngredientIds' => $userIngredientIds,
         ]);
     }
 }

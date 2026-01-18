@@ -15,6 +15,13 @@
                 <li class="nav-item px-3"><a class="nav-link" href="{{ route('home') }}#features">Tính năng</a></li>
                 <li class="nav-item px-3"><a class="nav-link" href="{{ route('home') }}#how-it-works">Cách hoạt động</a></li>
                 <li class="nav-item px-3"><a class="nav-link" href="{{ route('home') }}#dish">Món ăn</a></li>
+                @auth
+                    <li class="nav-item px-3">
+                        <a class="nav-link text-primary fw-semibold" href="{{ route('recommendations.index') }}">
+                            <i class="fas fa-robot me-1"></i>Gợi ý món ăn
+                        </a>
+                    </li>
+                @endauth
             </ul>
 
             <div class="d-flex align-items-center ms-auto header-cta">
@@ -28,6 +35,8 @@
                             <span>{{ Auth::user()->name }}</span>
                         </a>
                         <ul class="dropdown-menu dropdown-menu-end shadow-lg border-0" aria-labelledby="userNav">
+                            <li><a class="dropdown-item" href="{{ route('recommendations.index') }}"><i class="fas fa-robot me-2 text-primary"></i><strong>Gợi ý món ăn</strong></a></li>
+                            <li><hr class="dropdown-divider"></li>
                             <li><a class="dropdown-item" href="{{ route('profile.edit') }}"><i class="fas fa-user me-2"></i>Hồ sơ cá nhân</a></li>
                             <li><a class="dropdown-item" href="{{ route('preferences.show') }}"><i class="fas fa-heart me-2"></i>Sở thích ăn uống</a></li>
                             <li><a class="dropdown-item" href="{{ route('user.ingredients.index') }}"><i class="fas fa-utensils me-2"></i>Nguyên liệu của tôi</a></li>

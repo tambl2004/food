@@ -90,4 +90,28 @@ class User extends Authenticatable implements MustVerifyEmail // <-- SỬA DÒNG
                     ->withPivot('quantity', 'unit', 'updated_at')
                     ->withTimestamps();
     }
+
+    // Relationship với UserFoodHistory
+    public function foodHistories()
+    {
+        return $this->hasMany(UserFoodHistory::class);
+    }
+
+    // Relationship với Dish qua UserFoodHistory
+    public function viewedDishes()
+    {
+        return $this->belongsToMany(Dish::class, 'user_food_histories')
+                    ->wherePivot('action', 'viewed')
+                    ->withPivot('action_at')
+                    ->withTimestamps();
+    }
+
+    // Relationship với Dish qua UserFoodHistory (cooked)
+    public function cookedDishes()
+    {
+        return $this->belongsToMany(Dish::class, 'user_food_histories')
+                    ->wherePivot('action', 'cooked')
+                    ->withPivot('action_at')
+                    ->withTimestamps();
+    }
 }

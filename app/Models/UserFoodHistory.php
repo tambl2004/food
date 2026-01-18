@@ -5,20 +5,19 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class UserIngredient extends Model
+class UserFoodHistory extends Model
 {
     use HasFactory;
 
     protected $fillable = [
         'user_id',
-        'ingredient_id',
-        'quantity',
-        'unit',
-        'added_at',
+        'dish_id',
+        'action',
+        'action_at',
     ];
 
     protected $casts = [
-        'added_at' => 'datetime',
+        'action_at' => 'datetime',
     ];
 
     /**
@@ -30,10 +29,10 @@ class UserIngredient extends Model
     }
 
     /**
-     * Relationship với Ingredient
+     * Relationship với Dish
      */
-    public function ingredient()
+    public function dish()
     {
-        return $this->belongsTo(Ingredient::class);
+        return $this->belongsTo(Dish::class);
     }
 }
