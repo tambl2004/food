@@ -22,6 +22,7 @@ use App\Http\Controllers\HomeController;
 use App\Http\Controllers\NewsController;
 use App\Http\Controllers\Admin\IngredientController as AdminIngredientController;
 use App\Http\Controllers\Admin\FavoriteDishController as AdminFavoriteDishController;
+use App\Http\Controllers\Admin\DishController as AdminDishController;
 
 /*
 |--------------------------------------------------------------------------
@@ -114,6 +115,10 @@ Route::middleware(['auth', 'admin'])->prefix('admin')->name('admin.')->group(fun
     
     // Favorite dishes management
     Route::resource('favorite-dishes', AdminFavoriteDishController::class)->only(['index', 'show', 'destroy']);
+    
+    // Dishes management
+    Route::resource('dishes', AdminDishController::class);
+    Route::put('/dishes/{dish}/status', [AdminDishController::class, 'updateStatus'])->name('dishes.updateStatus');
 });
 
 // Nạp nhóm route xác thực (register/login/verify...) để có route verification.verify

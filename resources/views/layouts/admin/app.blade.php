@@ -38,6 +38,7 @@
             <nav class="flex-1 p-4 space-y-2 overflow-y-auto">
                 @php
                     $isDashboard = request()->routeIs('admin.dashboard');
+                    $isDishes = request()->routeIs('admin.dishes.*');
                     $isFavoriteDishes = request()->routeIs('admin.favorite-dishes.*');
                     $isIngredients = request()->routeIs('admin.ingredients.*');
                     $isUsers = request()->routeIs('admin.users.*');
@@ -46,9 +47,9 @@
                     <i class="fas fa-home w-5"></i>
                     <span class="font-medium">Trang chủ</span>
                 </a>
-                <a href="#" class="flex items-center space-x-3 px-4 py-3 rounded-lg text-gray-700 hover:bg-gray-100 transition">
+                <a href="{{ route('admin.dishes.index') }}" class="flex items-center space-x-3 px-4 py-3 rounded-lg {{ $isDishes ? 'bg-green-50 text-green-600' : 'text-gray-700 hover:bg-gray-100' }} transition">
                     <i class="fas fa-utensils w-5"></i>
-                    <span>Gợi ý món ăn</span>
+                    <span>Quản lý món ăn</span>
                 </a>
                 <a href="{{ route('admin.ingredients.index') }}" class="flex items-center space-x-3 px-4 py-3 rounded-lg {{ $isIngredients ? 'bg-green-50 text-green-600' : 'text-gray-700 hover:bg-gray-100' }} transition">
                     <i class="fas fa-list w-5"></i>
