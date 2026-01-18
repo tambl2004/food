@@ -13,6 +13,7 @@ use App\Http\Controllers\UserIngredientController;
 use App\Http\Controllers\DishController;
 use App\Http\Controllers\RecommendationController;
 use App\Http\Controllers\ShoppingListController;
+use App\Http\Controllers\HistoryController;
 
 
 // Controllers cho Admin
@@ -81,6 +82,10 @@ Route::middleware('auth')->group(function () {
     Route::get('/shopping-list', [ShoppingListController::class, 'index'])->name('shopping-list.index');
     Route::get('/api/recommendations/missing-ingredients', [ShoppingListController::class, 'getMissingIngredients'])->name('api.missing-ingredients');
     Route::post('/api/shopping-list/mark-purchased', [ShoppingListController::class, 'markAsPurchased'])->name('api.shopping-list.mark-purchased');
+    
+    // Lịch sử chọn món (User Food History)
+    Route::get('/user/history', [HistoryController::class, 'index'])->name('user.history.index');
+    Route::get('/api/user/history', [HistoryController::class, 'getHistoryApi'])->name('api.user.history');
 });
 
 // Trang hiển thị TẤT CẢ sản phẩm
@@ -89,6 +94,13 @@ Route::get('/products/{product}', [ProductController::class, 'show'])->name('pro
 
 // Trang hiển thị chi tiết món ăn (Dish)
 Route::get('/dishes/{dish}', [DishController::class, 'show'])->name('dishes.show');
+
+// Actions cho Dish (yêu cầu đăng nhập)
+Route::middleware('auth')->group(function () {
+    Route::post('/dishes/{dish}/cook', [DishController::class, 'cook'])->name('dishes.cook');
+    Route::post('/dishes/{dish}/favorite', [DishController::class, 'toggleFavorite'])->name('dishes.favorite');
+    Route::post('/dishes/{dish}/add-missing-ingredients', [DishController::class, 'addMissingIngredients'])->name('dishes.add-missing-ingredients');
+});
 
 // Tin tức
 Route::get('/news', [NewsController::class, 'index'])->name('news.index');
@@ -118,8 +130,9 @@ Route::post('/contact', [ContactController::class, 'send'])->name('contact.send'
 |
 */
 Route::middleware(['auth', 'verified'])->group(function () {
-    // Reviews - Chức năng đánh giá sản phẩm
+    // Reviews - Chức năng đánh giá sản phẩm/Dish
     Route::post('/products/{product}/reviews', [ReviewController::class, 'store'])->name('reviews.store');
+    Route::post('/dishes/{dish}/reviews', [ReviewController::class, 'storeDish'])->name('reviews.store-dish');
     Route::put('/reviews/{review}', [ReviewController::class, 'update'])->name('reviews.update');
     Route::delete('/reviews/{review}', [ReviewController::class, 'destroy'])->name('reviews.destroy');
 });
