@@ -12,7 +12,11 @@ return new class extends Migration
     public function up(): void
     {
         Schema::table('reviews', function (Blueprint $table) {
-            //
+            // Thêm dish_id (nullable để hỗ trợ cả Product và Dish reviews)
+            $table->foreignId('dish_id')->nullable()->after('product_id')->constrained('dishes')->onDelete('cascade');
+            
+            // Thêm status cho Dish reviews (visible/hidden)
+            $table->enum('status', ['visible', 'hidden'])->nullable()->after('is_approved')->default('visible');
         });
     }
 
@@ -22,7 +26,8 @@ return new class extends Migration
     public function down(): void
     {
         Schema::table('reviews', function (Blueprint $table) {
-            //
+            $table->dropForeign(['dish_id']);
+            $table->dropColumn(['dish_id', 'status']);
         });
     }
 };

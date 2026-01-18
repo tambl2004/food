@@ -42,6 +42,7 @@
                     $isCategories = request()->routeIs('admin.categories.*');
                     $isFavoriteDishes = request()->routeIs('admin.favorite-dishes.*');
                     $isIngredients = request()->routeIs('admin.ingredients.*');
+                    $isReviews = request()->routeIs('admin.reviews.*');
                     $isUsers = request()->routeIs('admin.users.*');
                 @endphp
                 <a href="{{ route('admin.dashboard') }}" class="flex items-center space-x-3 px-4 py-3 rounded-lg {{ $isDashboard ? 'bg-green-50 text-green-600' : 'text-gray-700 hover:bg-gray-100' }} transition">
@@ -68,22 +69,15 @@
                     <i class="fas fa-heart w-5"></i>
                     <span>Món ăn yêu thích</span>
                 </a>
+                <a href="{{ route('admin.reviews.index') }}" class="flex items-center space-x-3 px-4 py-3 rounded-lg {{ $isReviews ? 'bg-green-50 text-green-600' : 'text-gray-700 hover:bg-gray-100' }} transition">
+                    <i class="fas fa-star w-5"></i>
+                    <span>Quản lý đánh giá</span>
+                </a>
                 <a href="{{ route('admin.users.index') }}" class="flex items-center space-x-3 px-4 py-3 rounded-lg {{ $isUsers ? 'bg-green-50 text-green-600' : 'text-gray-700 hover:bg-gray-100' }} transition">
                     <i class="fas fa-users w-5"></i>
                     <span>Quản lý người dùng</span>
                 </a>
-                <!-- Eating Habits Section -->
-                <div class="pt-6 mt-6 border-t border-gray-200">
-                    <p class="text-xs font-semibold text-gray-500 uppercase px-4 mb-2">THÓI QUEN ĂN UỐNG</p>
-                    <a href="#" class="flex items-center space-x-3 px-4 py-3 rounded-lg text-gray-700 hover:bg-gray-100 transition">
-                        <i class="fas fa-chart-bar w-5"></i>
-                        <span>Phân tích</span>
-                    </a>
-                    <a href="#" class="flex items-center space-x-3 px-4 py-3 rounded-lg text-gray-700 hover:bg-gray-100 transition">
-                        <i class="fas fa-calendar w-5"></i>
-                        <span>Kế hoạch</span>
-                    </a>
-                </div>
+               
             </nav>
 
             <!-- User Profile Section -->

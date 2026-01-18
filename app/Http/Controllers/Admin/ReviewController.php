@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use App\Models\Review;
 use App\Models\Product;
+use App\Models\Dish;
 use Illuminate\Http\Request;
 
 class ReviewController extends Controller
@@ -16,38 +17,59 @@ class ReviewController extends Controller
     
     /**
      * Hiển thị danh sách tất cả đánh giá
+     * Quản lý cả Product reviews và Dish reviews
      */
     public function index(Request $request)
     {
-        $query = Review::with(['user', 'product'])->latest();
+        // Mặc định chỉ lấy Dish reviews (theo yêu cầu quản lý đánh giá & feedback cho Dishes)
+        $query = Review::with(['user', 'product', 'dish'])
+            ->dishReviews()
+            ->latest();
         
-        // Lọc theo trạng thái duyệt
-        if ($request->has('status')) {
-            if ($request->status === 'approved') {
-                $query->where('is_approved', true);
-            } elseif ($request->status === 'pending') {
-                $query->where('is_approved', false);
+        // Lọc theo trạng thái (visible/hidden cho Dish reviews)
+        if ($request->has('status') && $request->status != '') {
+            if ($request->status === 'visible') {
+                $query->where('status', 'visible');
+            } elseif ($request->status === 'hidden') {
+                $query->where('status', 'hidden');
             }
         }
         
-        // Lọc theo rating
+        // Lọc theo rating (1-5)
         if ($request->has('rating') && $request->rating != '') {
             $query->where('rating', $request->rating);
         }
         
-        // Tìm kiếm theo tên sản phẩm hoặc tên user
+        // Lọc theo món ăn
+        if ($request->has('dish_id') && $request->dish_id != '') {
+            $query->where('dish_id', $request->dish_id);
+        }
+        
+        // Tìm kiếm theo nội dung comment hoặc tên user
         if ($request->has('search') && $request->search != '') {
             $search = $request->search;
-            $query->whereHas('product', function($q) use ($search) {
-                $q->where('name', 'like', '%' . $search . '%');
-            })->orWhereHas('user', function($q) use ($search) {
-                $q->where('name', 'like', '%' . $search . '%');
+            $query->where(function($q) use ($search) {
+                $q->where('comment', 'like', '%' . $search . '%')
+                  ->orWhereHas('user', function($q) use ($search) {
+                      $q->where('name', 'like', '%' . $search . '%');
+                  })
+                  ->orWhereHas('dish', function($q) use ($search) {
+                      $q->where('name', 'like', '%' . $search . '%');
+                  });
             });
         }
         
         $reviews = $query->paginate(15);
         
-        return view('admin.reviews.index', compact('reviews'));
+        // Lấy danh sách món ăn để filter
+        $dishes = Dish::orderBy('name')->get(['id', 'name']);
+        
+        // Thống kê
+        $totalReviews = Review::dishReviews()->count();
+        $visibleReviews = Review::dishReviews()->where('status', 'visible')->count();
+        $hiddenReviews = Review::dishReviews()->where('status', 'hidden')->count();
+        
+        return view('admin.reviews.index', compact('reviews', 'dishes', 'totalReviews', 'visibleReviews', 'hiddenReviews'));
     }
     
     /**
@@ -55,8 +77,25 @@ class ReviewController extends Controller
      */
     public function show(Review $review)
     {
-        $review->load(['user', 'product']);
-        return view('admin.reviews.show', compact('review'));
+        $review->load(['user', 'product', 'dish']);
+        
+        // Kiểm tra xem user đã nấu món này chưa (từ favorite_dishes hoặc cook_history)
+        $hasCooked = false;
+        $cookedAt = null;
+        
+        if ($review->dish_id && $review->user_id) {
+            // Tạm thời kiểm tra từ favorite_dishes, có thể mở rộng sau với cook_history
+            $favorite = \App\Models\FavoriteDish::where('user_id', $review->user_id)
+                ->where('product_id', $review->dish_id)
+                ->first();
+            
+            if ($favorite) {
+                $hasCooked = true;
+                $cookedAt = $favorite->created_at;
+            }
+        }
+        
+        return view('admin.reviews.show', compact('review', 'hasCooked', 'cookedAt'));
     }
     
     /**
@@ -77,6 +116,29 @@ class ReviewController extends Controller
         $review->update(['is_approved' => false]);
         
         return redirect()->back()->with('success', 'Đánh giá đã bị từ chối!');
+    }
+    
+    /**
+     * Cập nhật trạng thái đánh giá (visible/hidden) - cho Dish reviews
+     */
+    public function updateStatus(Request $request, Review $review)
+    {
+        $validated = $request->validate([
+            'status' => 'required|in:visible,hidden',
+        ]);
+
+        // Chỉ cho phép cập nhật status cho Dish reviews
+        if (!$review->dish_id) {
+            return back()->with('error', 'Chức năng này chỉ dành cho đánh giá món ăn!');
+        }
+
+        $review->update(['status' => $validated['status']]);
+
+        $message = $validated['status'] == 'visible' 
+            ? 'Đã hiển thị đánh giá thành công!' 
+            : 'Đã ẩn đánh giá thành công!';
+
+        return back()->with('success', $message);
     }
     
     /**

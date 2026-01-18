@@ -102,8 +102,10 @@ Route::middleware(['auth', 'admin'])->prefix('admin')->name('admin.')->group(fun
     Route::put('/users/{user}/status', [AdminUserController::class, 'updateStatus'])->name('users.updateStatus');
     Route::resource('news', AdminNewsController::class);
     
-    // Admin Reviews Management
+    // Admin Reviews Management (Dish Reviews & Feedback)
     Route::resource('reviews', AdminReviewController::class)->only(['index', 'show', 'destroy']);
+    Route::put('/reviews/{review}/status', [AdminReviewController::class, 'updateStatus'])->name('reviews.updateStatus');
+    // Product reviews management (giữ lại để tương thích)
     Route::post('/reviews/{review}/approve', [AdminReviewController::class, 'approve'])->name('reviews.approve');
     Route::post('/reviews/{review}/reject', [AdminReviewController::class, 'reject'])->name('reviews.reject');
     Route::get('/reviews/statistics', [AdminReviewController::class, 'statistics'])->name('reviews.statistics');

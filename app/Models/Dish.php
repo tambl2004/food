@@ -80,15 +80,15 @@ class Dish extends Model
     }
 
     /**
-     * Relationship với Reviews
+     * Relationship với Reviews (Dish reviews)
      */
     public function reviews()
     {
-        return $this->hasMany(Review::class, 'product_id'); // Assuming reviews table uses product_id
+        return $this->hasMany(Review::class, 'dish_id');
     }
 
     /**
-     * Lấy các review đã được duyệt
+     * Lấy các review đã được duyệt (cho Product reviews - tương thích ngược)
      */
     public function approvedReviews()
     {
@@ -96,19 +96,27 @@ class Dish extends Model
     }
 
     /**
-     * Tính điểm trung bình của món ăn
+     * Lấy các review visible (cho Dish reviews)
      */
-    public function getAverageRatingAttribute()
+    public function visibleReviews()
     {
-        return $this->approvedReviews()->avg('rating') ?: 0;
+        return $this->reviews()->where('status', 'visible');
     }
 
     /**
-     * Đếm tổng số review
+     * Tính điểm trung bình của món ăn (sử dụng visible reviews)
+     */
+    public function getAverageRatingAttribute()
+    {
+        return $this->visibleReviews()->avg('rating') ?: 0;
+    }
+
+    /**
+     * Đếm tổng số review visible
      */
     public function getReviewCountAttribute()
     {
-        return $this->approvedReviews()->count();
+        return $this->visibleReviews()->count();
     }
 
     /**
