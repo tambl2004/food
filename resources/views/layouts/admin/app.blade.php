@@ -39,6 +39,7 @@
                 @php
                     $isDashboard = request()->routeIs('admin.dashboard');
                     $isDishes = request()->routeIs('admin.dishes.*');
+                    $isCategories = request()->routeIs('admin.categories.*');
                     $isFavoriteDishes = request()->routeIs('admin.favorite-dishes.*');
                     $isIngredients = request()->routeIs('admin.ingredients.*');
                     $isUsers = request()->routeIs('admin.users.*');
@@ -50,6 +51,10 @@
                 <a href="{{ route('admin.dishes.index') }}" class="flex items-center space-x-3 px-4 py-3 rounded-lg {{ $isDishes ? 'bg-green-50 text-green-600' : 'text-gray-700 hover:bg-gray-100' }} transition">
                     <i class="fas fa-utensils w-5"></i>
                     <span>Quản lý món ăn</span>
+                </a>
+                <a href="{{ route('admin.categories.index') }}" class="flex items-center space-x-3 px-4 py-3 rounded-lg {{ $isCategories ? 'bg-green-50 text-green-600' : 'text-gray-700 hover:bg-gray-100' }} transition">
+                    <i class="fas fa-folder w-5"></i>
+                    <span>Danh mục món ăn</span>
                 </a>
                 <a href="{{ route('admin.ingredients.index') }}" class="flex items-center space-x-3 px-4 py-3 rounded-lg {{ $isIngredients ? 'bg-green-50 text-green-600' : 'text-gray-700 hover:bg-gray-100' }} transition">
                     <i class="fas fa-list w-5"></i>
