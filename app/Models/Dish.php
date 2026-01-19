@@ -120,6 +120,18 @@ class Dish extends Model
     }
 
     /**
+     * Lấy phân bố sao (1-5 sao)
+     */
+    public function getRatingDistributionAttribute()
+    {
+        $distribution = [];
+        for ($i = 1; $i <= 5; $i++) {
+            $distribution[$i] = $this->visibleReviews()->where('rating', $i)->count();
+        }
+        return $distribution;
+    }
+
+    /**
      * Đếm số lượt nấu (từ favorite_dishes hoặc cook_history nếu có)
      */
     public function getCookCountAttribute()

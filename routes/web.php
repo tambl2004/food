@@ -86,6 +86,9 @@ Route::middleware('auth')->group(function () {
     // Lịch sử chọn món (User Food History)
     Route::get('/user/history', [HistoryController::class, 'index'])->name('user.history.index');
     Route::get('/api/user/history', [HistoryController::class, 'getHistoryApi'])->name('api.user.history');
+    
+    // Lịch sử đánh giá của user
+    Route::get('/user/reviews', [ReviewController::class, 'getUserReviews'])->name('user.reviews.index');
 });
 
 // Trang hiển thị TẤT CẢ sản phẩm
@@ -94,6 +97,9 @@ Route::get('/products/{product}', [ProductController::class, 'show'])->name('pro
 
 // Trang hiển thị chi tiết món ăn (Dish)
 Route::get('/dishes/{dish}', [DishController::class, 'show'])->name('dishes.show');
+
+// API Routes cho Reviews (public - không cần auth để xem)
+Route::get('/api/dishes/{dish}/reviews', [ReviewController::class, 'getDishReviews'])->name('api.dishes.reviews');
 
 // Actions cho Dish (yêu cầu đăng nhập)
 Route::middleware('auth')->group(function () {
@@ -135,6 +141,9 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::post('/dishes/{dish}/reviews', [ReviewController::class, 'storeDish'])->name('reviews.store-dish');
     Route::put('/reviews/{review}', [ReviewController::class, 'update'])->name('reviews.update');
     Route::delete('/reviews/{review}', [ReviewController::class, 'destroy'])->name('reviews.destroy');
+    
+    // API Routes cho Reviews (cần auth)
+    Route::post('/api/reviews', [ReviewController::class, 'storeReviewApi'])->name('api.reviews.store');
 });
 
 /*

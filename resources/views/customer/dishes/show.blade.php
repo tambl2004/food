@@ -356,37 +356,113 @@
         @endif
     @endauth
 
-    <!-- Reviews Section -->
-    @if($dish->visibleReviews->count() > 0)
+    <!-- Review Summary Section -->
+    @if($dish->review_count > 0)
         <div class="mt-5">
             <h4 class="mb-4">
                 <i class="fas fa-star me-2"></i>
-                Đánh giá ({{ $dish->visibleReviews->count() }})
+                Đánh giá & Phản hồi
             </h4>
+            
+            <!-- Review Summary -->
+            <div class="card mb-4">
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-md-4 text-center mb-3 mb-md-0">
+                            <h2 class="mb-1 text-primary">{{ number_format($dish->average_rating, 1) }}</h2>
+                            <div class="text-warning mb-2">
+                                @for($i = 1; $i <= 5; $i++)
+                                    <i class="fas fa-star {{ $i <= round($dish->average_rating) ? '' : 'far' }}"></i>
+                                @endfor
+                            </div>
+                            <p class="text-muted mb-0">{{ $dish->review_count }} đánh giá</p>
+                        </div>
+                        <div class="col-md-8">
+                            <h6 class="mb-3">Phân bố đánh giá</h6>
+                            @php
+                                $ratingDistribution = $dish->rating_distribution;
+                            @endphp
+                            @for($i = 5; $i >= 1; $i--)
+                                @php
+                                    $count = $ratingDistribution[$i] ?? 0;
+                                    $percentage = $dish->review_count > 0 ? ($count / $dish->review_count * 100) : 0;
+                                @endphp
+                                <div class="d-flex align-items-center mb-2">
+                                    <div class="me-2" style="width: 60px;">
+                                        <small class="text-muted">{{ $i }} sao</small>
+                                    </div>
+                                    <div class="flex-grow-1 me-2">
+                                        <div class="progress" style="height: 20px;">
+                                            <div class="progress-bar bg-warning" role="progressbar" 
+                                                 style="width: {{ $percentage }}%" 
+                                                 aria-valuenow="{{ $percentage }}" 
+                                                 aria-valuemin="0" 
+                                                 aria-valuemax="100">
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div style="width: 40px; text-align: right;">
+                                        <small class="text-muted">{{ $count }}</small>
+                                    </div>
+                                </div>
+                            @endfor
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    @endif
+
+    <!-- Reviews Section -->
+    @if($dish->visibleReviews->count() > 0)
+        <div class="mt-4">
             <div class="row">
-                @foreach($dish->visibleReviews->take(5) as $review)
+                @foreach($dish->visibleReviews->take(10) as $review)
                     <div class="col-12 mb-3">
                         <div class="card">
                             <div class="card-body">
-                                <div class="d-flex justify-content-between mb-2">
-                                    <div>
-                                        <strong>{{ $review->user->name ?? 'Ẩn danh' }}</strong>
-                                        <div class="text-warning">
-                                            @for($i = 1; $i <= 5; $i++)
-                                                <i class="fas fa-star {{ $i <= $review->rating ? '' : 'far' }}"></i>
-                                            @endfor
+                                <div class="d-flex justify-content-between align-items-start mb-2">
+                                    <div class="flex-grow-1">
+                                        <div class="d-flex align-items-center gap-2 mb-2">
+                                            @if($review->user && $review->user->avatar)
+                                                <img src="{{ asset('storage/' . $review->user->avatar) }}" 
+                                                     alt="{{ $review->user->name }}" 
+                                                     class="rounded-circle" 
+                                                     style="width: 40px; height: 40px; object-fit: cover;">
+                                            @else
+                                                <div class="rounded-circle bg-secondary d-flex align-items-center justify-content-center" 
+                                                     style="width: 40px; height: 40px;">
+                                                    <i class="fas fa-user text-white"></i>
+                                                </div>
+                                            @endif
+                                            <div>
+                                                <strong>{{ $review->user->name ?? 'Ẩn danh' }}</strong>
+                                                <div class="text-warning">
+                                                    @for($i = 1; $i <= 5; $i++)
+                                                        <i class="fas fa-star {{ $i <= $review->rating ? '' : 'far' }}"></i>
+                                                    @endfor
+                                                </div>
+                                            </div>
                                         </div>
+                                        @if($review->comment)
+                                            <p class="mb-0">{{ $review->comment }}</p>
+                                        @endif
                                     </div>
-                                    <small class="text-muted">{{ $review->created_at->diffForHumans() }}</small>
+                                    <small class="text-muted">{{ $review->created_at->format('d/m/Y H:i') }}</small>
                                 </div>
-                                @if($review->comment)
-                                    <p class="mb-0">{{ $review->comment }}</p>
-                                @endif
                             </div>
                         </div>
                     </div>
                 @endforeach
             </div>
+            
+            @if($dish->visibleReviews->count() > 10)
+                <div class="text-center mt-3">
+                    <button class="btn btn-outline-primary" onclick="loadMoreReviews()">
+                        Xem thêm đánh giá
+                    </button>
+                </div>
+            @endif
         </div>
     @endif
 
