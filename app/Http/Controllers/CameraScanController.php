@@ -28,7 +28,14 @@ class CameraScanController extends Controller
      */
     public function index(): View
     {
-        return view('customer.camera.scan');
+        $apiKey = env('GEMINI_API_KEY');
+        $hasApiKey = !empty($apiKey);
+        $apiKeyPreview = $hasApiKey ? substr($apiKey, 0, 10) . '...' : null;
+
+        return view('customer.camera.scan', [
+            'hasApiKey' => $hasApiKey,
+            'apiKeyPreview' => $apiKeyPreview,
+        ]);
     }
 
     /**

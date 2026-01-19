@@ -15,6 +15,7 @@ use App\Http\Controllers\RecommendationController;
 use App\Http\Controllers\ShoppingListController;
 use App\Http\Controllers\HistoryController;
 use App\Http\Controllers\CameraScanController;
+use App\Http\Controllers\GeminiTestController;
 
 
 // Controllers cho Admin
@@ -100,6 +101,11 @@ Route::middleware('auth')->group(function () {
     Route::post('/api/ai/nutrition-analysis', [CameraScanController::class, 'analyzeNutrition'])->name('api.ai.nutrition-analysis');
     Route::post('/api/user/ingredients/from-camera', [CameraScanController::class, 'saveIngredients'])->name('api.user.ingredients.from-camera');
     Route::post('/api/ai/suggest-dishes', [CameraScanController::class, 'suggestDishes'])->name('api.ai.suggest-dishes');
+    
+    // Demo test Gemini API
+    Route::get('/demo/gemini-test', [GeminiTestController::class, 'index'])->name('demo.gemini-test');
+    Route::post('/api/test/gemini/text', [GeminiTestController::class, 'testText'])->name('api.test.gemini.text');
+    Route::post('/api/test/gemini/image', [GeminiTestController::class, 'testImage'])->name('api.test.gemini.image');
 });
 
 // Trang hiển thị TẤT CẢ sản phẩm

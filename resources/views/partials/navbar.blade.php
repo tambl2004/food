@@ -50,6 +50,8 @@
                             <li><a class="dropdown-item" href="{{ route('profile.edit') }}"><i class="fas fa-user me-2"></i>Hồ sơ cá nhân</a></li>
                             <li><a class="dropdown-item" href="{{ route('preferences.show') }}"><i class="fas fa-heart me-2"></i>Sở thích ăn uống</a></li>
                             <li><a class="dropdown-item" href="{{ route('user.history.index') }}"><i class="fas fa-history me-2"></i>Lịch sử chọn món</a></li>
+                            <li><hr class="dropdown-divider"></li>
+                            <li><a class="dropdown-item" href="{{ route('demo.gemini-test') }}"><i class="fas fa-vial me-2"></i>Test Gemini API</a></li>
                             @if(Auth::user()->role === 'admin')
                                 <li><hr class="dropdown-divider"></li>
                                 <li><a class="dropdown-item text-warning" href="{{ route('admin.dashboard') }}"><i class="fas fa-cogs me-2"></i>Trang Admin</a></li>
