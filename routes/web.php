@@ -14,6 +14,7 @@ use App\Http\Controllers\DishController;
 use App\Http\Controllers\RecommendationController;
 use App\Http\Controllers\ShoppingListController;
 use App\Http\Controllers\HistoryController;
+use App\Http\Controllers\CameraScanController;
 
 
 // Controllers cho Admin
@@ -89,6 +90,16 @@ Route::middleware('auth')->group(function () {
     
     // Lịch sử đánh giá của user
     Route::get('/user/reviews', [ReviewController::class, 'getUserReviews'])->name('user.reviews.index');
+    
+    // Camera AI - Nhận diện nguyên liệu qua camera
+    Route::get('/camera', [CameraScanController::class, 'index'])->name('camera.scan');
+    Route::get('/ai/scan-ingredients', [CameraScanController::class, 'index'])->name('ai.scan-ingredients');
+    
+    // API Routes cho Camera AI
+    Route::post('/api/ai/vision/ingredients', [CameraScanController::class, 'detectIngredients'])->name('api.ai.vision.ingredients');
+    Route::post('/api/ai/nutrition-analysis', [CameraScanController::class, 'analyzeNutrition'])->name('api.ai.nutrition-analysis');
+    Route::post('/api/user/ingredients/from-camera', [CameraScanController::class, 'saveIngredients'])->name('api.user.ingredients.from-camera');
+    Route::post('/api/ai/suggest-dishes', [CameraScanController::class, 'suggestDishes'])->name('api.ai.suggest-dishes');
 });
 
 // Trang hiển thị TẤT CẢ sản phẩm

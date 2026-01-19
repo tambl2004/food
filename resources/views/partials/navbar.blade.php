@@ -24,6 +24,11 @@
                         </a>
                     </li>
                     <li class="nav-item px-3">
+                        <a class="nav-link" href="{{ route('camera.scan') }}">
+                            <i class="fas fa-camera me-1"></i>Quét Camera AI
+                        </a>
+                    </li>
+                    <li class="nav-item px-3">
                         <a class="nav-link" href="{{ route('shopping-list.index') }}">
                             <i class="fas fa-shopping-cart me-1"></i>Nguyên liệu cần mua
                         </a>
